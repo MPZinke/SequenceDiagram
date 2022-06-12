@@ -1,0 +1,22 @@
+
+Program						->	Expression							| ε
+Expression 					->	Declaration 						| Sequence
+Declaration					->	DeclarationString					| DeclarationString Expression
+DeclarationString			->	Identifier-Colon String
+Sequence					->	LeftSequence						| LeftSequence Expression
+								| RightSequence						| RightSequence Expression
+LeftSequence				->	Identifier-LeftArrow Identifier 	| Identifier-LeftArrow Identifier-String
+RightSequence				->	Identifier-RightArrow Identifier	| Identifier-RightArrow Identifier-String
+
+Identifier-Colon			->	Identifier Colon
+Identifier-LeftArrow		->	Identifier LeftArrow
+Identifier-RightArrow		->	Identifier RightArrow
+Identifier-String			->	Identifier String
+
+
+Identifier					->	"[_a-zA-Z][_a-zA-Z0-9]*"
+String						->	"\"([^\\\"]|\\.)*\""
+Colon						->	":"
+RightArrow					->	"->"
+LeftArrow					->	"<-"
+WhiteSpace					->	"[ \t\r]+"
