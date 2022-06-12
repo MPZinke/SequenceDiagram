@@ -73,6 +73,9 @@ def parse(lines: list) -> list:
 	tokens = []
 
 	for line_num, line in enumerate(lines):
+		if(line.strip() == ""):
+			continue
+
 		position = 0
 		while position < len(line):
 			token = token_type(line_num, line, position)

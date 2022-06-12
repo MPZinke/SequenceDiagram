@@ -5,7 +5,7 @@ __author__ = "MPZinke"
 ########################################################################################################################
 #                                                                                                                      #
 #   created by: MPZinke                                                                                                #
-#   on 2022.06.10                                                                                                      #
+#   on 2022.06.12                                                                                                      #
 #                                                                                                                      #
 #   DESCRIPTION:                                                                                                       #
 #   BUGS:                                                                                                              #
@@ -14,17 +14,11 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
-import json
-
-
-class Token:
-	def __init__(self, line: int, length: int, column: int, string: str, type: str):
-		self.line: int = line
-		self.length: int = length
-		self.column: int = column+1  # Adds 1 for human readablity
-		self.string: str = string[column:column+length]
+class ParseTree:
+	def __init__(self, type: str, tokens: list):
 		self.type: str = type
+		self.tokens: list = tokens
 
 
 	def __str__(self):
-		return json.dumps(self.string)
+		return self.type + "".join(["\n    " + "\n    ".join(str(token).split("\n")) for token in self.tokens])

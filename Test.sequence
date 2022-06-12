@@ -1,9 +1,9 @@
 START: "Start"
 END:   "End"
 
-START -> END
+TEST1_START -> TEST1_END
 
 
-END -> START "Double back"
+TEST2_END -> TEST2_START "Double back"
 
-END <- START
+TEST3_END <- TEST3_START

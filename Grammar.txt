@@ -2,15 +2,17 @@
 Program						->	Expression							| ε
 Expression 					->	Declaration 						| Sequence
 Declaration					->	DeclarationString					| DeclarationString Expression
-DeclarationString			->	Identifier-Colon String
+DeclarationString			->	Identifier Colon-String
 Sequence					->	LeftSequence						| LeftSequence Expression
-								| RightSequence						| RightSequence Expression
-LeftSequence				->	Identifier-LeftArrow Identifier 	| Identifier-LeftArrow Identifier-String
-RightSequence				->	Identifier-RightArrow Identifier	| Identifier-RightArrow Identifier-String
+							  | RightSequence						| RightSequence Expression
+LeftSequence				->	Identifier LeftArrow-Identifier 	| Identifier LeftArrow--Identifier-String
+RightSequence				->	Identifier RightArrow-Identifier	| Identifier RightArrow--Identifier-String
 
-Identifier-Colon			->	Identifier Colon
-Identifier-LeftArrow		->	Identifier LeftArrow
-Identifier-RightArrow		->	Identifier RightArrow
+Colon-String				->	Colon String
+LeftArrow--Identifier-String	->	LeftArrow Identifier-String
+RightArrow--Identifier-String	->	RightArrow Identifier-String
+LeftArrow-Identifier		->	LeftArrow Identifier
+RightArrow-Identifier		->	RightArrow Identifier
 Identifier-String			->	Identifier String
 
 
