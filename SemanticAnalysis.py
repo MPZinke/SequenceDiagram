@@ -5,7 +5,7 @@ __author__ = "MPZinke"
 ########################################################################################################################
 #                                                                                                                      #
 #   created by: MPZinke                                                                                                #
-#   on 2022.06.10                                                                                                      #
+#   on 2022.06.13                                                                                                      #
 #                                                                                                                      #
 #   DESCRIPTION:                                                                                                       #
 #   BUGS:                                                                                                              #
@@ -14,34 +14,18 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
-import json
+class SymbolTable:
+	def __init__(self, name):
+		self.name = name
 
 
-TOKEN_TYPES = ["Program", "Expression", "Declaration", "Sequence", "LeftSequence", "RightSequence"]
-TOKEN_TYPES = ["Identifier", "String", "Colon", "RightArrow", "LeftArrow", "WhiteSpace"]
+TERMINALS = []
+NON_TERMINALS = [Program, Expression, Declaration, Sequence, LeftSequence, RightSequence]
 
+# Take in ParseTree
 
-# Because the function name is used to determine the token type, this wrapper is applied to ensure the function is named
-#  appropriately.
-def wrap_token_type(function: callable) -> callable:
-	if(function.__name__ not in TOKEN_TYPES):
-		raise Exception(f"Token Name: {function.__name__} not known")
+# Read ParseTree
+# 	Symbols -> SymbolTable
+# 	Statement -> Added To Semantic Tree
 
-	def inner(*args: list, **kwargs: dict) -> callable:
-		return function(*args, **kwargs)
-
-	inner.__name__ = function.__name__
-	return inner
-
-
-class Token:
-	def __init__(self, line: int, length: int, column: int, string: str, type: str):
-		self.line: int = line
-		self.length: int = length
-		self.column: int = column+1  # Adds 1 for human readablity
-		self.string: str = string[column:column+length]
-		self.type: str = type
-
-
-	def __str__(self):
-		return json.dumps(self.string)
+# Determine execution for ParseTree

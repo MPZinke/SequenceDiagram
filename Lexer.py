@@ -19,7 +19,7 @@ import re
 from typing import Union
 
 
-from Token import Token
+from Token import Token, wrap_token_type
 
 
 # ————————————————————————————————————————————————————— WRAPPERS ————————————————————————————————————————————————————— #
@@ -37,31 +37,37 @@ def match_regex(function: callable) -> int:
 	return inner
 
 
+@wrap_token_type
 @match_regex
 def Identifier() -> int:
 	return r"[_a-zA-Z][_a-zA-Z0-9]*"
 
 
+@wrap_token_type
 @match_regex
 def String() -> int:
 	return r"\"([^\\\"]|\\.)*\""
 
 
+@wrap_token_type
 @match_regex
 def Colon() -> int:
 	return r":"
 
 
+@wrap_token_type
 @match_regex
 def RightArrow() -> int:
 	return r"->"
 
 
+@wrap_token_type
 @match_regex
 def LeftArrow() -> int:
 	return r"<-"
 
 
+@wrap_token_type
 @match_regex
 def WhiteSpace() -> int:
 	return r"[ \t\r]+"
