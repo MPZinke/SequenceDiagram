@@ -14,6 +14,7 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
+from functools import wraps
 import re
 from typing import Union
 
@@ -21,45 +22,56 @@ from typing import Union
 from Token import Token
 
 
-def list_diff(int_diff: list) -> int:
-	return int_diff[1] - int_diff[0]
+# ————————————————————————————————————————————————————— WRAPPERS ————————————————————————————————————————————————————— #
+
+def match_regex(function: callable) -> int:
+	def list_diff(int_diff: list) -> int:
+		return int_diff[1] - int_diff[0]
+
+	@wraps(function)
+	def inner(string: str) -> str:
+		regex = function()
+		match: Union[re.Match, None] = re.match(regex, string)
+		return list_diff(match.span()) if(match) else 0
+
+	return inner
 
 
-def match_regex(regex: str, string: str) -> int:
-	match: Union[re.Match, None] = re.match(regex, string)
-	return list_diff(match.span()) if(match) else 0
+@match_regex
+def Identifier() -> int:
+	return r"[_a-zA-Z][_a-zA-Z0-9]*"
 
 
+@match_regex
+def String() -> int:
+	return r"\"([^\\\"]|\\.)*\""
 
 
-def identifier(string: str) -> int:
-	return match_regex(r"[_a-zA-Z][_a-zA-Z0-9]*", string)
+@match_regex
+def Colon() -> int:
+	return r":"
 
 
-def string(string: str) -> int:
-	return match_regex(r"\"([^\\\"]|\\.)*\"", string)
+@match_regex
+def RightArrow() -> int:
+	return r"->"
 
 
-def colon(string: str) -> int:
-	return match_regex(r":", string)
+@match_regex
+def LeftArrow() -> int:
+	return r"<-"
 
 
-def right_arrow(string: str) -> int:
-	return match_regex(r"->", string)
+@match_regex
+def WhiteSpace() -> int:
+	return r"[ \t\r]+"
 
 
-def left_arrow(string: str) -> int:
-	return match_regex(r"<-", string)
-
-
-def white_space(string: str) -> int:
-	return match_regex(r"[ \t\r]+", string)
-
-
+# ———————————————————————————————————————————————— TOKEN  IDENTIFYING ———————————————————————————————————————————————— #
 
 def token_type(line_num: int,  line: str, column: int) -> Token:
 	token = Token(0, 0, column, "", "")
-	for function in [identifier, string, colon, right_arrow, left_arrow, white_space]:
+	for function in [Identifier, String, Colon, RightArrow, LeftArrow, WhiteSpace]:
 		if((temp := Token(line_num+1, function(line[column:]), column, line, function.__name__)).length > token.length):
 			token = temp
 
@@ -80,7 +92,7 @@ def parse(lines: list) -> list:
 		while position < len(line):
 			token = token_type(line_num, line, position)
 
-			if(token.type != "white_space"):
+			if(token.type != WhiteSpace.__name__):
 				tokens.append(token)
 			position += token.length
 

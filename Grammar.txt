@@ -1,19 +1,13 @@
 
 Program						->	Expression							| ε
 Expression 					->	Declaration 						| Sequence
-Declaration					->	DeclarationString					| DeclarationString Expression
-DeclarationString			->	Identifier Colon-String
+							  | Declaration Expression				| Sequence Expression
+Declaration					->	Identifier Colon String				| Identifier Colon String Expression
+DeclarationString			->	
 Sequence					->	LeftSequence						| LeftSequence Expression
 							  | RightSequence						| RightSequence Expression
-LeftSequence				->	Identifier LeftArrow-Identifier 	| Identifier LeftArrow--Identifier-String
-RightSequence				->	Identifier RightArrow-Identifier	| Identifier RightArrow--Identifier-String
-
-Colon-String				->	Colon String
-LeftArrow--Identifier-String	->	LeftArrow Identifier-String
-RightArrow--Identifier-String	->	RightArrow Identifier-String
-LeftArrow-Identifier		->	LeftArrow Identifier
-RightArrow-Identifier		->	RightArrow Identifier
-Identifier-String			->	Identifier String
+LeftSequence				->	Identifier LeftArrow Identifier 	| Identifier LeftArrow Identifier String
+RightSequence				->	Identifier RightArrow Identifier	| Identifier RightArrow Identifier String
 
 
 Identifier					->	"[_a-zA-Z][_a-zA-Z0-9]*"
