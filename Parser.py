@@ -36,8 +36,8 @@ class UnexpectedToken(Exception):
 
 # ————————————————————————————————————————————————————— WRAPPERS ————————————————————————————————————————————————————— #
 
-def wrap_ParseTree(function: callable) -> ParseTree:
-	def inner(token_list: list, index: int):
+def wrap_ParseTree(function: callable) -> callable:
+	def inner(token_list: list, index: int) -> ParseTree:
 		if(index >= len(token_list)):
 			return None
 
