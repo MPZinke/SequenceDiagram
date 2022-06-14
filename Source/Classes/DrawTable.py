@@ -13,28 +13,28 @@ __author__ = "MPZinke"
 #                                                                                                                      #
 ########################################################################################################################
 
-from sys import stderr
+
+from PIL import ImageFont
+from pathlib import Path
+from os.path import join
 
 
-from Classes.ParseTree import ParseTree
-from Classes.Token import TokenErr
-import LexicalAnalysis
-import SemanticAnalysis
-import SyntacticAnalysis
+SOURCE_DIR = str(Path(__file__).absolute().parent.parent)  # .../Source
+RESOURCES_DIR = join(str(Path(__file__).absolute().parent.parent), "Resources")  # .../Source/Resources
+
+LARGE_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=32)
 
 
-def main():
-	with open("Test.sequence", "r") as file:
-		try:
-			tokens: list = LexicalAnalysis.parse([line.strip() for line in file.readlines()])
-			# print([token.type for token in tokens])
-			abstract_syntax_tree: ParseTree = SyntacticAnalysis.parse(tokens)
-			# print(str(abstract_syntax_tree))
-			SemanticAnalysis.traverse(abstract_syntax_tree)
-		except TokenErr as error:
-			print(error, file=stderr)
+class DrawSymbol:
+	def __init__(self, name: str, value: str, x_pos: int):
+		self.name: str = name
+		self.value: str = value
+		self.x_pos: int = x_pos
 
 
+	def draw(self, draw_area) -> None:
+		text_width, text_height = draw_area.textsize(self.value, font=LARGE_FONT)
+		draw_area.text((self.x_pos - text_width / 2, 100), self.value, font=LARGE_FONT)
+		draw_area_height = draw_area._image._size[1]
 
-if __name__ == '__main__':
-	main()
+		draw_area.line((self.x_pos, 100+text_height+10, self.x_pos, draw_area_height-100), fill=(255,255,255))

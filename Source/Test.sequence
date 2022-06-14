@@ -1,5 +1,9 @@
+PREFACE: "Preface"
 START: "Start"
+MIDDLE: "Middle"
 END:   "End"
+EPILOGE: "Epiloge"
+
 
 START -> END
 START -> END "START -> END"

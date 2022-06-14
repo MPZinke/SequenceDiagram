@@ -52,7 +52,7 @@ def Declaration(declaration: ParseTree) -> List[callable]:
 	if(identifier.str in SYMBOL_TABLE):
 		raise TokenErr("Redefinition of declaration '{str}'", identifier)
 
-	SYMBOL_TABLE.append(identifier.str, declaration.type, string.str)
+	SYMBOL_TABLE.append(SYMBOL_TABLE.unique_id(identifier.str), identifier.str, declaration.type, string.str)
 
 	return []
 
@@ -63,7 +63,6 @@ def Sequence(sequence: ParseTree) -> List[callable]:
 
 
 def LeftSequence(left_sequence: ParseTree) -> List[callable]:
-	
 	if((identifier1 := left_sequence[0]).str not in SYMBOL_TABLE):
 		raise TokenErr("Unknown sequence '{str}'", identifier1)
 
@@ -87,7 +86,6 @@ def LeftSequence(left_sequence: ParseTree) -> List[callable]:
 
 
 def RightSequence(right_sequence: ParseTree) -> List[callable]:
-	
 	if((identifier1 := right_sequence[0]).str not in SYMBOL_TABLE):
 		raise TokenErr("Unknown sequence '{str}'", identifier1)
 
@@ -110,10 +108,10 @@ def RightSequence(right_sequence: ParseTree) -> List[callable]:
 
 
 def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:
-	program = Program(abstract_syntax_tree)
-	print(str(SYMBOL_TABLE))
-	for function in program:
-		function()
+	sequences = Program(abstract_syntax_tree)
+	print(str(SYMBOL_TABLE))  #TESTING
+	# for function in sequences:  #TESTING
+		# function()  #TESTING
 
-	Draw.draw_symbols(SYMBOL_TABLE)
-	return program
+	Draw.draw(sequences, SYMBOL_TABLE)  #TESTING
+	return sequences, SYMBOL_TABLE
