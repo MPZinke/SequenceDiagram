@@ -17,8 +17,8 @@ __author__ = "MPZinke"
 from typing import Tuple, Union
 
 
-from ParseTree import ParseTree, add_parse_type, check_parse_type, to_ParseTree
-from Token import UnexpectedEOF, UnexpectedToken
+from Classes.ParseTree import ParseTree, add_parse_type, check_parse_type, to_ParseTree
+from Classes.Token import UnexpectedEOF, UnexpectedToken
 
 
 def wrap_index(function: callable) -> callable:

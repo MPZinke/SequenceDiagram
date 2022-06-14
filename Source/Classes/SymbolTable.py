@@ -17,7 +17,7 @@ __author__ = "MPZinke"
 from typing import List
 
 
-from Token import TokenErr
+from Classes.Token import TokenErr
 
 
 class Symbol:
@@ -42,6 +42,10 @@ class SymbolTable:
 				return True
 
 		return False
+
+
+	def __iter__(self) -> iter:
+		return iter(self.symbols)
 
 
 	def __str__(self):

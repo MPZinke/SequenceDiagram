@@ -19,7 +19,7 @@ import re
 from typing import Union
 
 
-from Token import Token, wrap_token_type
+from Classes.Token import Token, wrap_token_type
 
 
 # ————————————————————————————————————————————————————— WRAPPERS ————————————————————————————————————————————————————— #

@@ -5,9 +5,9 @@ from sys import stderr
 
 import Lexer
 import Parser
-import ParseTree
+import Classes.ParseTree
 import SemanticAnalysis
-from Token import TokenErr
+from Classes.Token import TokenErr
 
 
 def main():

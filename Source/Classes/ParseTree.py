@@ -14,7 +14,7 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
-from Token import TOKEN_TYPES
+from Classes.Token import TOKEN_TYPES
 
 
 NON_TERMINALS = ["Program", "Expression", "Declaration", "Sequence", "LeftSequence", "RightSequence"]

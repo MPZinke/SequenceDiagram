@@ -18,9 +18,9 @@ from typing import List
 
 
 import Draw
-from ParseTree import ParseTree, check_parse_type
-from SymbolTable import SymbolTable
-from Token import TokenErr
+from Classes.ParseTree import ParseTree, check_parse_type
+from Classes.SymbolTable import SymbolTable
+from Classes.Token import TokenErr
 
 
 SYMBOL_TABLE = SymbolTable()
@@ -75,14 +75,14 @@ def LeftSequence(left_sequence: ParseTree) -> List[callable]:
 
 	if(len(left_sequence) == 4):
 		if(identifier1.str == identifier2.str):
-			return [Draw.labeled_circular_sequence(identifier1.str, left_sequence[3])]
+			return [Draw.labeled_circular_sequence(identifier1.str, left_sequence[3].str)]
 		else:
 			return [Draw.labeled_backward_sequence(identifier1.str, identifier2.str, left_sequence[3].str)]
 	else:
 		if(identifier1.str == identifier2.str):
 			return [Draw.unlabeled_circular_sequence(identifier1.str)]
 		else:
-			return [Draw.unlabeled_backward_sequence(identifier1.str, identifier2)]
+			return [Draw.unlabeled_backward_sequence(identifier1.str, identifier2.str)]
 
 
 
@@ -99,7 +99,7 @@ def RightSequence(right_sequence: ParseTree) -> List[callable]:
 
 	if(len(right_sequence) == 4):
 		if(identifier1.str == identifier2.str):
-			return [Draw.labeled_circular_sequence(identifier1.str, right_sequence[3])]
+			return [Draw.labeled_circular_sequence(identifier1.str, right_sequence[3].str)]
 		else:
 			return [Draw.labeled_backward_sequence(identifier1.str, identifier2.str, right_sequence[3].str)]
 	else:
@@ -114,4 +114,6 @@ def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:
 	print(str(SYMBOL_TABLE))
 	for function in program:
 		function()
+
+	Draw.draw_symbols(SYMBOL_TABLE)
 	return program

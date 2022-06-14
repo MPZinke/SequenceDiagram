@@ -2,6 +2,12 @@ START: "Start"
 END:   "End"
 
 START -> END
-END <- START
 START -> END "START -> END"
-END <- START "END <- START"
+
+END <- START
+END <- START "Backward Label"
+
+START -> START
+START -> START "Forward Circular Label"
+END <- END
+END <- END "Backward Circular Label"
