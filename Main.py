@@ -6,6 +6,7 @@ from sys import stderr
 import Lexer
 import Parser
 import ParseTree
+import SemanticAnalysis
 
 
 def main():
@@ -17,6 +18,8 @@ def main():
 			print(str(abstract_syntax_tree))
 		except (Parser.UnexpectedEOF, Parser.UnexpectedToken) as error:
 			print(error, file=stderr)
+
+		SemanticAnalysis.traverse(abstract_syntax_tree)
 
 
 if __name__ == '__main__':

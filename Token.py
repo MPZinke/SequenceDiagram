@@ -15,9 +15,9 @@ __author__ = "MPZinke"
 
 
 import json
+import parse
 
 
-TOKEN_TYPES = ["Program", "Expression", "Declaration", "Sequence", "LeftSequence", "RightSequence"]
 TOKEN_TYPES = ["Identifier", "String", "Colon", "RightArrow", "LeftArrow", "WhiteSpace"]
 
 
@@ -45,3 +45,14 @@ class Token:
 
 	def __str__(self):
 		return json.dumps(self.string)
+
+
+class TokenException(Exception):
+	def __new__(cls, message, token):
+		fields = parse.compile(message)._named_fields
+		message = message.format(**{field: getattr(token, field) for field in fields})
+		return super(TokenException, cls).__new__(cls, message)
+
+
+	def __init__(self, message):
+		Exception.__init__(self, message)

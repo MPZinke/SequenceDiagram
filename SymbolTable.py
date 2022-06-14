@@ -14,63 +14,56 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
-from typing import List
+from Token import TokenException
 
 
-from ParseTree import ParseTree, wrap_parse_type
-from SymbolTable import SymbolTable
+class Symbol:
+	def __init__(self, name, type, value):
+		self.name: str = name
+		self.type: str = type
+		self.value: str = value
 
 
-SYMBOL_TABLE = SymbolTable()
+	def __eq__(self, right) -> bool:
+		return self.name == right.name and self.type == right.type
 
 
-@wrap_parse_type
-def Program(program: ParseTree) -> List[callable]:
-	if(program.tokens == 0):
-		return []
-
-	else:
-		return Expression(program.tokens[0])
+class SymbolTable:
+	def __init__(self):
+		self.symbols: List[Symbol] = []
 
 
-def Expression(expression: ParseTree) -> List[callable]:
-	execution = []
-	for symbol in expression:
-		if(symbol.type == "Declaration"):
-			execution += Declaration(symbol)
-		elif(symbol.type == "Expression"):
-			execution += Expression(symbol)
-		# elif(symbol.type == "Sequence"):
-		# 	execution += Sequence(symbol)
+	def __contains__(self, name) -> bool:
+		for symbol in self.symbols:
+			if(symbol.name == name):
+				return True
 
-	return execution
+		return False
 
 
-def Declaration(declaration: ParseTree) -> List[callable]:
-	identifier = declaration[0]
-	string = declaration[2]
+	def __str__(self):
+		lengths =  {"name": 0, "type": 0, "value": 0}
+		for symbol in self.symbols:
+			for attr, length in lengths.items():
+				if(len(getattr(symbol, attr)) > length):
+					lengths[attr] = len(getattr(symbol, attr))
 
-	if(str(identifier) in SYMBOL_TABLE):
-		raise TokenException("LN: {line} COL: {column}::Redefinition of declaration '{string}'", declaration[0])
+		strings = []
+		for symbol in self.symbols:
+			string = "|{name:{name_len}}|{type:{type_len}}|{value:{value_len}}|"
+			values = {key+"_len": f" <{str(value)}" for key, value in lengths.items()}
+			strings.append(string.format(**{**values, **{key: getattr(symbol, key) for key in lengths}}))
 
-	SYMBOL_TABLE.append(identifier[0].string, declaration.type, string[0].string)
-
-	return []
-
-
-
-def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:
-	program = Program(abstract_syntax_tree)
-	print(str(SYMBOL_TABLE))
-	return program
+		return "\n".join(strings)
 
 
+	def lookup(self, name) -> Symbol:
+		for symbol in self.symbols:
+			if(symbol.name == name):
+				return symbol
+
+		return None
 
 
-# Take in ParseTree
-
-# Read ParseTree
-# 	Symbols -> SymbolTable
-# 	Statement -> Added To Semantic Tree
-
-# Determine execution for ParseTree
+	def append(self, name, type, value) -> None:
+		self.symbols.append(Symbol(name, type, value))

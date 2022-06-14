@@ -17,8 +17,7 @@ __author__ = "MPZinke"
 from typing import Tuple, Union
 
 
-from ParseTree import ParseTree
-from Token import wrap_token_type
+from ParseTree import ParseTree, wrap_parse_type
 
 
 class UnexpectedEOF(Exception):
@@ -51,6 +50,7 @@ def wrap_ParseTree(function: callable) -> callable:
 
 # —————————————————————————————————————————————————— NON-TERMINALS  —————————————————————————————————————————————————— #
 
+@wrap_parse_type
 @wrap_ParseTree
 def Program(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -62,6 +62,7 @@ def Program(token_list: list, index: int, function_name: str="") -> Union[Tuple[
 	return None
 
 
+@wrap_parse_type
 @wrap_ParseTree
 def Expression(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -88,6 +89,7 @@ def Expression(token_list: list, index: int, function_name: str="") -> Union[Tup
 	return None
 
 
+@wrap_parse_type
 @wrap_ParseTree
 def Declaration(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -107,6 +109,7 @@ def Declaration(token_list: list, index: int, function_name: str="") -> Union[Tu
 	return None
 
 
+@wrap_parse_type
 @wrap_ParseTree
 def Sequence(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -121,6 +124,7 @@ def Sequence(token_list: list, index: int, function_name: str="") -> Union[Tuple
 	return None
 
 
+@wrap_parse_type
 @wrap_ParseTree
 def LeftSequence(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -145,6 +149,7 @@ def LeftSequence(token_list: list, index: int, function_name: str="") -> Union[T
 	return None
 
 
+@wrap_parse_type
 @wrap_ParseTree
 def RightSequence(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -171,7 +176,7 @@ def RightSequence(token_list: list, index: int, function_name: str="") -> Union[
 
 # ———————————————————————————————————————————————————— TERMINALS  ———————————————————————————————————————————————————— #
 
-@wrap_token_type
+@wrap_parse_type
 @wrap_ParseTree
 def Identifier(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -183,7 +188,7 @@ def Identifier(token_list: list, index: int, function_name: str="") -> Union[Tup
 	return None
 
 
-@wrap_token_type
+@wrap_parse_type
 @wrap_ParseTree
 def String(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -195,7 +200,7 @@ def String(token_list: list, index: int, function_name: str="") -> Union[Tuple[P
 	return None
 
 
-@wrap_token_type
+@wrap_parse_type
 @wrap_ParseTree
 def Colon(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -207,7 +212,7 @@ def Colon(token_list: list, index: int, function_name: str="") -> Union[Tuple[Pa
 	return None
 
 
-@wrap_token_type
+@wrap_parse_type
 @wrap_ParseTree
 def RightArrow(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
@@ -219,7 +224,7 @@ def RightArrow(token_list: list, index: int, function_name: str="") -> Union[Tup
 	return None
 
 
-@wrap_token_type
+@wrap_parse_type
 @wrap_ParseTree
 def LeftArrow(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
 	"""
