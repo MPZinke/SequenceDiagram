@@ -3,7 +3,6 @@ Program						->	Expression							| ε
 Expression 					->	Declaration 						| Sequence
 							  | Declaration Expression				| Sequence Expression
 Declaration					->	Identifier Colon String				| Identifier Colon String Expression
-DeclarationString			->	
 Sequence					->	LeftSequence						| LeftSequence Expression
 							  | RightSequence						| RightSequence Expression
 LeftSequence				->	Identifier LeftArrow Identifier 	| Identifier LeftArrow Identifier String

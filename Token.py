@@ -47,12 +47,25 @@ class Token:
 		return json.dumps(self.string)
 
 
-class TokenException(Exception):
-	def __new__(cls, message, token):
-		fields = parse.compile(message)._named_fields
-		message = message.format(**{field: getattr(token, field) for field in fields})
-		return super(TokenException, cls).__new__(cls, message)
+class TokenErr(Exception):
+	def __init__(self, message_format: str, token: Token, additional_values: dict={}):
+		Exception.__init__(self, TokenErr.format_message(message_format, token, additional_values))
 
 
-	def __init__(self, message):
-		Exception.__init__(self, message)
+	@staticmethod
+	def format_message(message_format: str, token: Token, additional_values: dict) -> str:
+		message_prefix = f"LN: {token.line}, COL: {token.column}::"
+
+		fields = parse.compile(message_format)._named_fields
+		values = {field: getattr(token, field) for field in fields if(field not in additional_values)}
+		return message_prefix + message_format.format(**{**values, **additional_values})
+
+
+class UnexpectedEOF(TokenErr):
+	def __init__(self, expected: str, token: Token):
+		TokenErr.__init__(self, "Unexpected EOF after '{string}'. Expected: {expected}", token, {"expected": expected})
+
+
+class UnexpectedToken(TokenErr):
+	def __init__(self, expected: str, token: Token):
+		TokenErr.__init__(self, "Expected '{expected}'; found '{type}'\n", token, {"expected": expected})

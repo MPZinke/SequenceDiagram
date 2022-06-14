@@ -14,7 +14,10 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
-from Token import TokenException
+from typing import List
+
+
+from Token import TokenErr
 
 
 class Symbol:
@@ -50,7 +53,7 @@ class SymbolTable:
 
 		strings = []
 		for symbol in self.symbols:
-			string = "|{name:{name_len}}|{type:{type_len}}|{value:{value_len}}|"
+			string = "| {name:{name_len}} | {type:{type_len}} | {value:{value_len}} |"
 			values = {key+"_len": f" <{str(value)}" for key, value in lengths.items()}
 			strings.append(string.format(**{**values, **{key: getattr(symbol, key) for key in lengths}}))
 

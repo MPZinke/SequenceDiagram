@@ -18,19 +18,8 @@ from typing import Tuple, Union
 
 
 from ParseTree import ParseTree, wrap_parse_type
+from Token import UnexpectedEOF, UnexpectedToken
 
-
-class UnexpectedEOF(Exception):
-	def __init__(self, expected_token, token):
-		Exception.__init__(self,
-		  f"LN: {token.line}, COL: {token.column} Unexpected End Of File after token {str(token)} Expected: " +
-		  f"{expected_token}")
-
-
-class UnexpectedToken(Exception):
-	def __init__(self, expected_token, token):
-		Exception.__init__(self,
-		  f"LN: {token.line}, COL: {token.column}: Expected '{expected_token}'; found '{token.type}'\n")
 
 
 # ————————————————————————————————————————————————————— WRAPPERS ————————————————————————————————————————————————————— #

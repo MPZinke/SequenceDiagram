@@ -19,6 +19,7 @@ from typing import List
 
 from ParseTree import ParseTree, wrap_parse_type
 from SymbolTable import SymbolTable
+from Token import TokenErr
 
 
 SYMBOL_TABLE = SymbolTable()
@@ -34,29 +35,30 @@ def Program(program: ParseTree) -> List[callable]:
 
 
 def Expression(expression: ParseTree) -> List[callable]:
-	execution = []
+	execution: List[callable] = []
 	for symbol in expression:
-		if(symbol.type == "Declaration"):
-			execution += Declaration(symbol)
-		elif(symbol.type == "Expression"):
-			execution += Expression(symbol)
-		# elif(symbol.type == "Sequence"):
-		# 	execution += Sequence(symbol)
+		execution += globals()[symbol.type](symbol)
 
 	return execution
 
 
 def Declaration(declaration: ParseTree) -> List[callable]:
-	identifier = declaration[0]
-	string = declaration[2]
+	identifier = declaration[0][0]
+	string = declaration[2][0]
 
-	if(str(identifier) in SYMBOL_TABLE):
-		raise TokenException("LN: {line} COL: {column}::Redefinition of declaration '{string}'", declaration[0])
+	if(identifier.string in SYMBOL_TABLE):
+		raise TokenErr("LN: {line} COL: {column}::Redefinition of declaration '{string}'", identifier)
 
-	SYMBOL_TABLE.append(identifier[0].string, declaration.type, string[0].string)
+	SYMBOL_TABLE.append(identifier.string, declaration.type, string.string)
 
 	return []
 
+
+def Sequence(sequence: ParseTree) -> List[callable]:
+	execution: List[callable] = []
+	# for symbol in sequence:
+
+	return execution
 
 
 def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:

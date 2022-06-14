@@ -1,6 +1,8 @@
 START: "Start"
 END:   "End"
 
+TEST1_START: "Test 1 Start"
+TEND: "Failure"
 TEST1_START -> TEST1_END
 
 
