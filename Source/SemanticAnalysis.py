@@ -17,7 +17,8 @@ __author__ = "MPZinke"
 from typing import List
 
 
-from ParseTree import ParseTree, wrap_parse_type
+import Draw
+from ParseTree import ParseTree, check_parse_type
 from SymbolTable import SymbolTable
 from Token import TokenErr
 
@@ -25,7 +26,7 @@ from Token import TokenErr
 SYMBOL_TABLE = SymbolTable()
 
 
-@wrap_parse_type
+@check_parse_type
 def Program(program: ParseTree) -> List[callable]:
 	if(program.tokens == 0):
 		return []
@@ -34,6 +35,7 @@ def Program(program: ParseTree) -> List[callable]:
 		return Expression(program.tokens[0])
 
 
+@check_parse_type
 def Expression(expression: ParseTree) -> List[callable]:
 	execution: List[callable] = []
 	for symbol in expression:
@@ -42,37 +44,74 @@ def Expression(expression: ParseTree) -> List[callable]:
 	return execution
 
 
+@check_parse_type
 def Declaration(declaration: ParseTree) -> List[callable]:
-	identifier = declaration[0][0]
-	string = declaration[2][0]
+	identifier = declaration[0]
+	string = declaration[2]
 
-	if(identifier.string in SYMBOL_TABLE):
-		raise TokenErr("LN: {line} COL: {column}::Redefinition of declaration '{string}'", identifier)
+	if(identifier.str in SYMBOL_TABLE):
+		raise TokenErr("Redefinition of declaration '{str}'", identifier)
 
-	SYMBOL_TABLE.append(identifier.string, declaration.type, string.string)
+	SYMBOL_TABLE.append(identifier.str, declaration.type, string.str)
 
 	return []
 
 
+@check_parse_type
 def Sequence(sequence: ParseTree) -> List[callable]:
-	execution: List[callable] = []
-	# for symbol in sequence:
+	return globals()[sequence[0].type](sequence[0])
 
-	return execution
+
+def LeftSequence(left_sequence: ParseTree) -> List[callable]:
+	
+	if((identifier1 := left_sequence[0]).str not in SYMBOL_TABLE):
+		raise TokenErr("Unknown sequence '{str}'", identifier1)
+
+	if((identifier2 := left_sequence[2]).str not in SYMBOL_TABLE):
+		raise TokenErr("Unknown sequence '{str}'", identifier2)
+
+	if(SYMBOL_TABLE.order(identifier2) < SYMBOL_TABLE.order(identifier1)):
+		raise TokenErr(f"{{str}} declared before {identifier2.str}, but listed as sequenced after", identifier1)
+
+	if(len(left_sequence) == 4):
+		if(identifier1.str == identifier2.str):
+			return [Draw.labeled_circular_sequence(identifier1.str, left_sequence[3])]
+		else:
+			return [Draw.labeled_backward_sequence(identifier1.str, identifier2.str, left_sequence[3].str)]
+	else:
+		if(identifier1.str == identifier2.str):
+			return [Draw.unlabeled_circular_sequence(identifier1.str)]
+		else:
+			return [Draw.unlabeled_backward_sequence(identifier1.str, identifier2)]
+
+
+
+def RightSequence(right_sequence: ParseTree) -> List[callable]:
+	
+	if((identifier1 := right_sequence[0]).str not in SYMBOL_TABLE):
+		raise TokenErr("Unknown sequence '{str}'", identifier1)
+
+	if((identifier2 := right_sequence[2]).str not in SYMBOL_TABLE):
+		raise TokenErr("Unknown sequence '{str}'", identifier2)
+
+	if(SYMBOL_TABLE.order(identifier2) < SYMBOL_TABLE.order(identifier1)):
+		raise TokenErr(f"{{str}} declared before {identifier2.str}, but listed as sequenced after", identifier1)
+
+	if(len(right_sequence) == 4):
+		if(identifier1.str == identifier2.str):
+			return [Draw.labeled_circular_sequence(identifier1.str, right_sequence[3])]
+		else:
+			return [Draw.labeled_backward_sequence(identifier1.str, identifier2.str, right_sequence[3].str)]
+	else:
+		if(identifier1.str == identifier2.str):
+			return [Draw.unlabeled_circular_sequence(identifier1.str)]
+		else:
+			return [Draw.unlabeled_backward_sequence(identifier1.str, identifier2.str)]
 
 
 def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:
 	program = Program(abstract_syntax_tree)
 	print(str(SYMBOL_TABLE))
+	for function in program:
+		function()
 	return program
-
-
-
-
-# Take in ParseTree
-
-# Read ParseTree
-# 	Symbols -> SymbolTable
-# 	Statement -> Added To Semantic Tree
-
-# Determine execution for ParseTree

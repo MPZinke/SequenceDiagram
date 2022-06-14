@@ -60,6 +60,10 @@ class SymbolTable:
 		return "\n".join(strings)
 
 
+	def append(self, name, type, value) -> None:
+		self.symbols.append(Symbol(name, type, value))
+
+
 	def lookup(self, name) -> Symbol:
 		for symbol in self.symbols:
 			if(symbol.name == name):
@@ -68,5 +72,9 @@ class SymbolTable:
 		return None
 
 
-	def append(self, name, type, value) -> None:
-		self.symbols.append(Symbol(name, type, value))
+	def order(self, name) -> int:
+		for x in range(len(self.symbols)):
+			if(self.symbols[x].name == x):
+				return x
+
+		return -1

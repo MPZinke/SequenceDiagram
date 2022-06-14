@@ -17,31 +17,25 @@ __author__ = "MPZinke"
 from typing import Tuple, Union
 
 
-from ParseTree import ParseTree, wrap_parse_type
+from ParseTree import ParseTree, add_parse_type, check_parse_type, to_ParseTree
 from Token import UnexpectedEOF, UnexpectedToken
 
 
-
-# ————————————————————————————————————————————————————— WRAPPERS ————————————————————————————————————————————————————— #
-
-def wrap_ParseTree(function: callable) -> callable:
-	def inner(token_list: list, index: int) -> ParseTree:
+def wrap_index(function: callable) -> callable:
+	def inner(token_list: list, index: int) -> callable:
 		if(index >= len(token_list)):
 			return None
 
-		if((results := function(token_list, index, function.__name__)) is None):
-			return None
-
-		return ParseTree(function.__name__, results[:-1]), results[-1]
+		return function(token_list, index)
 	inner.__name__ = function.__name__
 	return inner
 
 
 # —————————————————————————————————————————————————— NON-TERMINALS  —————————————————————————————————————————————————— #
 
-@wrap_parse_type
-@wrap_ParseTree
-def Program(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@to_ParseTree
+def Program(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	Program -> Expression | ε
 	"""
@@ -51,9 +45,9 @@ def Program(token_list: list, index: int, function_name: str="") -> Union[Tuple[
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def Expression(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@to_ParseTree
+def Expression(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	Expression -> Declaration | Declaration Expression | Sequence | Sequence Expression
 	"""
@@ -78,9 +72,9 @@ def Expression(token_list: list, index: int, function_name: str="") -> Union[Tup
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def Declaration(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@to_ParseTree
+def Declaration(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	Declaration -> Identifier Colon String
 	"""
@@ -89,7 +83,7 @@ def Declaration(token_list: list, index: int, function_name: str="") -> Union[Tu
 	  and (colon := Colon(token_list, identifier[-1])) is not None
 	):
 		if((string := String(token_list, colon[-1])) is not None):
-			return *identifier[:-1], *colon[:-1], *string[:-1], string[-1]
+			return identifier[0], colon[0], string[0], string[-1]
 
 		if(len(token_list) <= colon[-1]):
 			raise UnexpectedEOF(String.__name__, token_list[identifier[-1]])
@@ -98,9 +92,9 @@ def Declaration(token_list: list, index: int, function_name: str="") -> Union[Tu
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def Sequence(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@to_ParseTree
+def Sequence(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	Sequence -> LeftSequence | RightSequence
 	"""
@@ -113,11 +107,11 @@ def Sequence(token_list: list, index: int, function_name: str="") -> Union[Tuple
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def LeftSequence(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@to_ParseTree
+def LeftSequence(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
-	LeftSequence -> Identifier LeftArrow Identifier | Identifier LeftArrow Identifier-String
+	LeftSequence -> Identifier LeftArrow Identifier | Identifier LeftArrow Identifier String
 	"""
 	# Identifier LeftArrow Identifier String
 	if((identifier1 := Identifier(token_list, index)) is not None
@@ -126,10 +120,10 @@ def LeftSequence(token_list: list, index: int, function_name: str="") -> Union[T
 		if((identifier2 := Identifier(token_list, left_arrow[-1])) is not None):
 			# Identifier LeftArrow Identifier String
 			if((string := String(token_list, identifier2[-1])) is not None):
-				return *identifier1[:-1], *left_arrow[:-1], *identifier2[:-1], *string[:-1], string[-1]
+				return identifier1[0], left_arrow[0], identifier2[0], string[0], string[-1]
 
 			# Identifier LeftArrow Identifier
-			return *identifier1[:-1], *left_arrow[:-1], *identifier2[:-1], identifier2[-1]
+			return identifier1[0], left_arrow[0], identifier2[0], identifier2[-1]
 
 		if(len(token_list) <= left_arrow[-1]):
 			raise UnexpectedEOF(Identifier.__name__, token_list[identifier1[-1]])
@@ -138,11 +132,11 @@ def LeftSequence(token_list: list, index: int, function_name: str="") -> Union[T
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def RightSequence(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@to_ParseTree
+def RightSequence(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
-	RightSequence -> Identifier RightArrow-Identifier | Identifier RightArrow Identifier-String
+	RightSequence -> Identifier RightArrow-Identifier | Identifier RightArrow Identifier String
 	"""
 	# Identifier RightArrow Identifier | Identifier RightArrow Identifier String
 	if((identifier1 := Identifier(token_list, index)) is not None
@@ -151,10 +145,10 @@ def RightSequence(token_list: list, index: int, function_name: str="") -> Union[
 		if((identifier2 := Identifier(token_list, right_arrow[-1])) is not None):
 			# Identifier RightArrow Identifier String
 			if((string := String(token_list, identifier2[-1])) is not None):
-				return *identifier1[:-1], *right_arrow[:-1], *identifier2[:-1], *string[:-1], string[-1]
+				return identifier1[0], right_arrow[0], identifier2[0], string[0], string[-1]
 
 			# Identifier RightArrow Identifier
-			return *identifier1[:-1], *right_arrow[:-1], *identifier2[:-1], identifier2[-1]
+			return identifier1[0], right_arrow[0], identifier2[0], identifier2[-1]
 
 		if(len(token_list) <= right_arrow[-1]):
 			raise UnexpectedEOF(Identifier.__name__, token_list[identifier1[-1]])
@@ -165,9 +159,9 @@ def RightSequence(token_list: list, index: int, function_name: str="") -> Union[
 
 # ———————————————————————————————————————————————————— TERMINALS  ———————————————————————————————————————————————————— #
 
-@wrap_parse_type
-@wrap_ParseTree
-def Identifier(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@add_parse_type
+def Identifier(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	Identifier -> "[_a-zA-Z][_a-zA-Z0-9]*"
 	"""
@@ -177,9 +171,9 @@ def Identifier(token_list: list, index: int, function_name: str="") -> Union[Tup
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def String(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@add_parse_type
+def String(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	String -> "\"([^\\\"]|\\.)*\""
 	"""
@@ -189,9 +183,9 @@ def String(token_list: list, index: int, function_name: str="") -> Union[Tuple[P
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def Colon(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@add_parse_type
+def Colon(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	Colon -> ":"
 	"""
@@ -201,9 +195,9 @@ def Colon(token_list: list, index: int, function_name: str="") -> Union[Tuple[Pa
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def RightArrow(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@add_parse_type
+def RightArrow(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	RightArrow -> "->"
 	"""
@@ -213,9 +207,9 @@ def RightArrow(token_list: list, index: int, function_name: str="") -> Union[Tup
 	return None
 
 
-@wrap_parse_type
-@wrap_ParseTree
-def LeftArrow(token_list: list, index: int, function_name: str="") -> Union[Tuple[ParseTree, int], None]:
+@wrap_index
+@add_parse_type
+def LeftArrow(token_list: list, index: int, function_name: str) -> Union[Tuple[ParseTree, int], None]:
 	"""
 	LeftArrow -> "<-"
 	"""
@@ -231,7 +225,7 @@ def parse(token_list: list) -> Union[ParseTree, None]:
 	abstract_syntax_tree, last_consumed_index = Program(token_list, 0)
 	if(last_consumed_index != len(token_list)):
 		token = token_list[last_consumed_index]
-		error = f"Parsing Failed: Last consumed token: '{token.string}' at Line: {token.line}, Column: {token.column}"
+		error = f"Parsing Failed: Last consumed token: '{token.str}' at Line: {token.line}, Column: {token.column}"
 		raise Exception(error)
 
 	return abstract_syntax_tree

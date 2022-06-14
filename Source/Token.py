@@ -39,12 +39,13 @@ class Token:
 		self.line: int = line
 		self.length: int = length
 		self.column: int = column+1  # Adds 1 for human readablity
-		self.string: str = string[column:column+length]
+		self.str: str = string[column+1:column+length-1] if(type == TOKEN_TYPES[1]) else string[column:column+length]
 		self.type: str = type
 
 
 	def __str__(self):
-		return json.dumps(self.string)
+		return json.dumps(self.str)
+
 
 
 class TokenErr(Exception):
@@ -63,7 +64,7 @@ class TokenErr(Exception):
 
 class UnexpectedEOF(TokenErr):
 	def __init__(self, expected: str, token: Token):
-		TokenErr.__init__(self, "Unexpected EOF after '{string}'. Expected: {expected}", token, {"expected": expected})
+		TokenErr.__init__(self, "Unexpected EOF after '{str}'. Expected: {expected}", token, {"expected": expected})
 
 
 class UnexpectedToken(TokenErr):

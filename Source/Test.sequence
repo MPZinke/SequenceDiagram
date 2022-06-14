@@ -1,11 +1,7 @@
 START: "Start"
 END:   "End"
 
-TEST1_START: "Test 1 Start"
-TEND: "Failure"
-TEST1_START -> TEST1_END
-
-
-TEST2_END -> TEST2_START "Double back"
-
-TEST3_END <- TEST3_START
+START -> END
+END <- START
+START -> END "START -> END"
+END <- START "END <- START"
