@@ -99,12 +99,12 @@ def RightSequence(right_sequence: ParseTree) -> List[callable]:
 		if(identifier1.str == identifier2.str):
 			return [Draw.labeled_circular_sequence(identifier1.str, right_sequence[3].str)]
 		else:
-			return [Draw.labeled_backward_sequence(identifier1.str, identifier2.str, right_sequence[3].str)]
+			return [Draw.labeled_forward_sequence(identifier1.str, identifier2.str, right_sequence[3].str)]
 	else:
 		if(identifier1.str == identifier2.str):
 			return [Draw.unlabeled_circular_sequence(identifier1.str)]
 		else:
-			return [Draw.unlabeled_backward_sequence(identifier1.str, identifier2.str)]
+			return [Draw.unlabeled_forward_sequence(identifier1.str, identifier2.str)]
 
 
 def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:
