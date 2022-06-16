@@ -4,9 +4,15 @@ MIDDLE: "Middle"
 END:   "End"
 EPILOGE: "Epiloge"
 
-PREFACE -> START
+SPACE : ""
+
+part2: "PART II"
+
+PREFACE -> START "PREFACE -> START"
 START -> MIDDLE
-MIDDLE -> END
+MIDDLE -> END "MIDDLE -> END\nHello NewLine"
 END -> EPILOGE
 
-PREFACE <- EPILOGE
+EPILOGE -> part2
+
+PREFACE <- part2 "PREFACE <- part2"

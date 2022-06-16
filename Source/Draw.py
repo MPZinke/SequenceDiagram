@@ -15,12 +15,21 @@ __author__ = "MPZinke"
 
 
 import math
+from os.path import join
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 from typing import List, Tuple
 
 
 from Classes.DrawTable import DrawSymbol
 from Classes.SymbolTable import SymbolTable
+
+
+SOURCE_DIR = str(Path(__file__).absolute().parent)  # .../Source
+RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
+
+MEDIUM_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=20)
+
 
 
 def draw_symbol_for_name(name: str, drawn_symbols: List[DrawSymbol]) -> DrawSymbol:
@@ -37,6 +46,7 @@ def labeled_backward_sequence(left_symbol_name: str, right_symbol_name: str, lab
 		right_draw_symbol = draw_symbol_for_name(right_symbol_name, drawn_symbols)
 
 		draw_arrow(draw_area, (right_draw_symbol.x_pos, y_pos), (left_draw_symbol.x_pos, y_pos), None, None)
+		
 		#TODO write label
 		print(label)
 
@@ -60,9 +70,12 @@ def labeled_forward_sequence(left_symbol_name: str, right_symbol_name: str, labe
 		left_draw_symbol = draw_symbol_for_name(left_symbol_name, drawn_symbols)
 		right_draw_symbol = draw_symbol_for_name(right_symbol_name, drawn_symbols)
 
+		text_width, text_height = draw_area.textsize(label, font=MEDIUM_FONT)
+		x_pos = (left_draw_symbol.x_pos + right_draw_symbol.x_pos - text_width) / 2
+		draw_area.text((x_pos, y_pos - (text_height / 2 + 15)), label, fill=(255, 255, 255), font=MEDIUM_FONT)
+
+		y_pos += text_height / 2
 		draw_arrow(draw_area, (left_draw_symbol.x_pos, y_pos), (right_draw_symbol.x_pos, y_pos), None, None)
-		#TODO write label
-		print(label)
 
 	return draw_forward_sequence
 
@@ -120,8 +133,8 @@ def draw_arrow(draw_area: ImageDraw, start: set, end: set, A: DrawSymbol, B: Dra
 	if(end[0] < start[0]):
 		line_theta -= 3.141592653589793
 
-	point1 = head_point(30, 20, line_theta, end)
-	point2 = head_point(-30, 20, line_theta, end)
+	point1 = head_point(25, 20, line_theta, end)
+	point2 = head_point(-25, 20, line_theta, end)
 
 	draw_area.line(start+end, fill=(255,255,255))
 	draw_area.polygon((end, point1, point2), fill=(255,255,255))
@@ -141,7 +154,7 @@ def write_symbols(draw_area: ImageDraw, symbol_table: SymbolTable) -> List[DrawS
 
 def create_canvas(sequences: List[callable], symbol_table: SymbolTable) -> Image:
 	width = (len(symbol_table) - 1) * 200 + 400
-	height = (len(sequences) - 1) * 150 + 300  # 100 top, 100 bottom, 32 Object, 68 buffer
+	height = (len(sequences) - 1) * 100 + 300  # 100 top, 100 bottom, 32 Object, 68 buffer
 	image = Image.new(mode="RGBA", size=[width, height])
 	return image
 
@@ -151,6 +164,6 @@ def draw(sequences: List[callable], symbol_table: SymbolTable) -> None:
 	draw_area = ImageDraw.Draw(image)
 	drawn_symbols: List[DrawSymbol] = write_symbols(draw_area, symbol_table)
 	for y, sequence in enumerate(sequences):
-		sequence(draw_area, (y*150) + 166, drawn_symbols)
+		sequence(draw_area, (y*100) + 166, drawn_symbols)
 
 	image.show()

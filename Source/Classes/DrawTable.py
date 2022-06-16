@@ -14,13 +14,13 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
+from os.path import join
 from PIL import ImageFont
 from pathlib import Path
-from os.path import join
 
 
 SOURCE_DIR = str(Path(__file__).absolute().parent.parent)  # .../Source
-RESOURCES_DIR = join(str(Path(__file__).absolute().parent.parent), "Resources")  # .../Source/Resources
+RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
 
 LARGE_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=32)
 
