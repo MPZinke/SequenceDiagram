@@ -4,14 +4,9 @@ MIDDLE: "Middle"
 END:   "End"
 EPILOGE: "Epiloge"
 
+PREFACE -> START
+START -> MIDDLE
+MIDDLE -> END
+END -> EPILOGE
 
-START -> END
-START -> END "START -> END"
-
-END <- START
-END <- START "Backward Label"
-
-START -> START
-START -> START "Forward Circular Label"
-END <- END
-END <- END "Backward Circular Label"
+PREFACE <- EPILOGE
