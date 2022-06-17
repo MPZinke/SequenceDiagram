@@ -33,7 +33,7 @@ class Arrow:
 	MIN, MAX = 0, 1
 
 
-	def __init__(self, tip_point: set, line_angle: float=None, *, draw_area: ImageDraw=None, start_point: set=None,
+	def __init__(self, tip_point: set, *, line_angle: float=None, draw_area: ImageDraw=None, start_point: set=None,
 	  head_angle: float=DEFAULT_ANGLE, head_length: int=DEFAULT_LENGTH):
 		if(line_angle is None and start_point is None):
 			raise Exception("'line_angle' and 'start_point' cannot both be None for Arrow::()")
@@ -92,7 +92,7 @@ class Arrow:
 
 	# ————————————————————————————————————————————————— CALCULATIONS ————————————————————————————————————————————————— #
 
-	def dimensions(self: object=None, *, draw_area: ImageDraw=None, line_angle: float=None, start_point: set=None,
+	def bounds(self: object=None, *, draw_area: ImageDraw=None, line_angle: float=None, start_point: set=None,
 	  tip_point: set=None, head_angle: float=DEFAULT_ANGLE, head_length: int=DEFAULT_LENGTH) -> Set[int]:
 		if(self is not None):
 			draw_area = self.draw_area if(draw_area is None) else draw_area
@@ -109,20 +109,30 @@ class Arrow:
 			raise Exception("'line_angle' and 'start_point' cannot both be None for Arrow::draw_head")
 
 		line_angle: float = Arrow.calculate_line_angle(start_point, tip_point) if(line_angle is None) else line_angle
-		point1 = Arrow.head_point(line_angle=line_angle, tip_point=tip_point, head_angle=head_angle,
+		point1 = Arrow.head_point(self, line_angle=line_angle, tip_point=tip_point, head_angle=head_angle,
 		  head_length=head_length)
-		point2 = Arrow.head_point(line_angle=line_angle, tip_point=tip_point, head_angle=-head_angle,
+		point2 = Arrow.head_point(self, line_angle=line_angle, tip_point=tip_point, head_angle=-head_angle,
 		  head_length=head_length)
 
 		points = [point1, point2, start_point, tip_point]
 		# [[x_min, y_min], [x_max, y_max]]
-		min_max = [[points[0][Arrow.X], points[0][Arrow.Y]], [points[0][Arrow.X], points[0][Arrow.Y]]]
+		bounds = [[points[0][Arrow.X], points[0][Arrow.Y]], [points[0][Arrow.X], points[0][Arrow.Y]]]
 		for point in points:
 			for xy in range(2):
-				min_max[Arrow.MIN][xy] = point[xy] if(point[xy] < min_max[Arrow.MIN][xy]) else min_max[Arrow.MIN][xy]
-				min_max[Arrow.MAX][xy] = point[xy] if(point[xy] > min_max[Arrow.MAX][xy]) else min_max[Arrow.MAX][xy]
+				bounds[Arrow.MIN][xy] = point[xy] if(point[xy] < bounds[Arrow.MIN][xy]) else bounds[Arrow.MIN][xy]
+				bounds[Arrow.MAX][xy] = point[xy] if(point[xy] > bounds[Arrow.MAX][xy]) else bounds[Arrow.MAX][xy]
 
-		return min_max
+		return bounds
+
+
+	def dimensions(self: object=None, *, draw_area: ImageDraw=None, line_angle: float=None, start_point: set=None,
+	  tip_point: set=None, head_angle: float=DEFAULT_ANGLE, head_length: int=DEFAULT_LENGTH) -> Set[int]:
+		bounds = Arrow.bounds(self, draw_area=draw_area, line_angle=line_angle, start_point=start_point,
+		  tip_point=tip_point, head_angle=head_angle, head_length=head_length)
+
+		MAX, MIN = Arrow.MAX, Arrow.MIN
+		X, Y = Arrow.X, Arrow.Y
+		return [bounds[MAX][X] - bounds[MIN][X], bounds[MAX][Y] - bounds[MIN][Y]]
 
 
 	def head_point(self: object=None, *, head_angle: float=None, head_length: int=None, line_angle: float=None,
@@ -148,7 +158,7 @@ class Arrow:
 		x_tranlation = x_rotation + tip_point[0]
 		y_tranlation = y_rotation + tip_point[1]
 
-		return (x_tranlation, y_tranlation)
+		return (int(x_tranlation), int(y_tranlation))
 
 
 	@staticmethod
@@ -162,6 +172,16 @@ class Arrow:
 			line_angle -= 180
 
 		return line_angle
+
+
+	# ———————————————————————————————————————————————— TRANSFORMATION ———————————————————————————————————————————————— #
+
+	def translate(self, x: int, y: int) -> None:
+		self.tip_point = (self.tip_point[Arrow.X]+x, self.tip_point[Arrow.Y]+y)
+
+		if(self.start_point is not None):
+			self.start_point = (self.start_point[Arrow.X]+x, self.start_point[Arrow.Y]+y)
+
 
 
 def test():
@@ -180,7 +200,7 @@ def test():
 	start = (100, 100)
 	end = (500, 500)
 	line_angle: float = Arrow.calculate_line_angle(start, end)
-	arrow = Arrow(end, line_angle, draw_area=draw_area)
+	arrow = Arrow(end, draw_area=draw_area, line_angle=line_angle)
 	arrow.draw_head()
 	draw_area.line(start+end, fill=(255, 255, 255))
 
