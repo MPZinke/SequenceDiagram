@@ -31,8 +31,32 @@ RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
 
 MEDIUM_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=20)
 
+def start_point_to_center_around(center: set, dimensions: set) -> set:
+	return (center[0] + dimensions[0] /  2, center[2] + dimensions[2] /  2)
+
 
 # def center_objects_over_point(point: int, size1: int, buffer: int, size2: int):
+def text_dimensions(draw_area: ImageDraw, text: str, *, buffer: int=15, font=MEDIUM_FONT) -> set:
+	height, width = buffer * text.count("\\n"), 0
+	for line in text.split("\\n"):
+		text_width, text_height = draw_area.textsize(line, font=font)
+		height += text_height
+		if(text_width > width):
+			width = text_width
+
+	return (height, width)
+
+
+def write_text(draw_area: ImageDraw, text: str, center: set, border: set) -> None:
+	
+	for x, line in enumerate(text.split("\\n")):
+
+		text_width, text_height = draw_area.textsize(line, font=font)
+		height += text_height
+		if(text_width > width):
+			width = text_width
+
+	return (height, width)
 
 
 
@@ -73,7 +97,7 @@ def labeled_forward_sequence(left_symbol_name: str, right_symbol_name: str, labe
 		arrow = Arrow((right_draw_symbol.x_pos, y_pos), start_point=(left_draw_symbol.x_pos, y_pos))
 
 		_, arrow_height = arrow.dimensions()
-		text_width, text_height = draw_area.textsize(label, font=MEDIUM_FONT)
+		text_width, text_height = text_dimensions(draw_area, label)
 
 		text_x_pos = (left_draw_symbol.x_pos + right_draw_symbol.x_pos - text_width) / 2
 		text_y_position = y_pos - (text_height + arrow_height + 15) / 2
