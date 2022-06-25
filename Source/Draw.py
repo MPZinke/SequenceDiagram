@@ -37,18 +37,18 @@ def start_point_to_center_around(center: set, dimensions: set) -> set:
 
 # def center_objects_over_point(point: int, size1: int, buffer: int, size2: int):
 def text_dimensions(draw_area: ImageDraw, text: str, *, buffer: int=15, font=MEDIUM_FONT) -> set:
-	height, width = buffer * text.count("\\n"), 0
+	width, height = 0, buffer * text.count("\\n")
 	for line in text.split("\\n"):
 		text_width, text_height = draw_area.textsize(line, font=font)
 		height += text_height
 		if(text_width > width):
 			width = text_width
 
-	return (height, width)
+	return (width, height)
 
 
-def write_text(draw_area: ImageDraw, text: str, center: set, border: set) -> None:
-	
+def write_text(draw_area: ImageDraw, text: str, start: set, border: set, *, font=MEDIUM_FONT) -> None:
+
 	for x, line in enumerate(text.split("\\n")):
 
 		text_width, text_height = draw_area.textsize(line, font=font)
