@@ -21,6 +21,7 @@ from typing import Set
 
 
 from Classes.Canvas import Canvas
+from Classes.Components import Component
 from Classes.Text import Text
 
 
@@ -29,28 +30,41 @@ RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
 
 
 class Lifeline:
-	def __init__(self, canvas: Canvas, name: str, value: str, start: Set[int]=None):
-		self.canvas: str = canvas
-		self.title: str = Text(value, canvas=canvas, font=Text.LARGE_FONT)
-		self.size = self.title.dimensions()
-		self.start = start
-		self.value: str = value
+	def __init__(self, name: str, text: str, *, border: int=100, buffer: int=50, canvas: Canvas=None, start: Set[int]=None):
+		Component.__init__(self, canvas=canvas, start=start)
+		self.title: Text = Text(text, canvas=canvas, font=Text.LARGE_FONT)
+		self.buffer: int = buffer
+		self.name: str = name
+		self.size: Set[int] = self.title.dimensions()
 
 
-	def append_title(self, canvas: Image, *, buffer: int=50, border: int=100) -> ImageDraw:
+	def __reduce__(self):
+		return str(self)
+
+
+	def __str__(self):
+		return f"{{title: {self.title}, name: {self.name}, size: {self.size}, start: {self.start}}}"
+
+
+	def append_title(self=None, *, border: int=None, buffer: int=None, canvas: Canvas=None) -> ImageDraw:
+		if(self is not None):
+			canvas = self.canvas if(canvas is None) else canvas
+			buffer = self.buffer if(buffer is None) else buffer
+			border = self.border if(border is None) else border
+
+		Text.check_params("append_title", **{"border": border, "buffer": buffer, "canvas": canvas})
+
 		canvas_width, canvas_height = canvas.dimensions()
 		text_width, text_height = self.title.dimensions()
 		self.title.start = (canvas_width - border, border)
-		print(self.title.start)
+		self.start = self.title.start
 
-		canvas.resize((canvas_width + text_width + buffer, canvas_height))
-		print(canvas.dimensions())
+		canvas.resize(canvas_width + text_width + buffer, canvas_height)
 		self.title.draw(canvas=canvas)
 
-		
 
 	def dimensions(self) -> Set[int]:
-		pass
+		return self.size
 		
 
 
