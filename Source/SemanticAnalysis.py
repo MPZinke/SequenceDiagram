@@ -17,7 +17,7 @@ __author__ = "MPZinke"
 from typing import List
 
 
-import Draw
+import Diagram
 from Classes.ParseTree import ParseTree, check_parse_type
 from Classes.SymbolTable import SymbolTable
 from Classes.Token import TokenErr
@@ -74,14 +74,14 @@ def LeftSequence(left_sequence: ParseTree) -> List[callable]:
 
 	if(len(left_sequence) == 4):
 		if(identifier1.str == identifier2.str):
-			return [Draw.labeled_circular_sequence(identifier1.str, left_sequence[3].str)]
+			return [Diagram.labeled_circular_sequence(identifier1.str, left_sequence[3].str)]
 		else:
-			return [Draw.labeled_backward_sequence(identifier1.str, identifier2.str, left_sequence[3].str)]
+			return [Diagram.labeled_backward_sequence(identifier1.str, identifier2.str, left_sequence[3].str)]
 	else:
 		if(identifier1.str == identifier2.str):
-			return [Draw.unlabeled_circular_sequence(identifier1.str)]
+			return [Diagram.unlabeled_circular_sequence(identifier1.str)]
 		else:
-			return [Draw.unlabeled_backward_sequence(identifier1.str, identifier2.str)]
+			return [Diagram.unlabeled_backward_sequence(identifier1.str, identifier2.str)]
 
 
 
@@ -97,21 +97,16 @@ def RightSequence(right_sequence: ParseTree) -> List[callable]:
 
 	if(len(right_sequence) == 4):
 		if(identifier1.str == identifier2.str):
-			return [Draw.labeled_circular_sequence(identifier1.str, right_sequence[3].str)]
+			return [Diagram.labeled_circular_sequence(identifier1.str, right_sequence[3].str)]
 		else:
-			return [Draw.labeled_forward_sequence(identifier1.str, identifier2.str, right_sequence[3].str)]
+			return [Diagram.labeled_forward_sequence(identifier1.str, identifier2.str, right_sequence[3].str)]
 	else:
 		if(identifier1.str == identifier2.str):
-			return [Draw.unlabeled_circular_sequence(identifier1.str)]
+			return [Diagram.unlabeled_circular_sequence(identifier1.str)]
 		else:
-			return [Draw.unlabeled_forward_sequence(identifier1.str, identifier2.str)]
+			return [Diagram.unlabeled_forward_sequence(identifier1.str, identifier2.str)]
 
 
 def traverse(abstract_syntax_tree: ParseTree) -> List[callable]:
 	sequences = Program(abstract_syntax_tree)
-	print(str(SYMBOL_TABLE))  #TESTING
-	# for function in sequences:  #TESTING
-		# function()  #TESTING
-
-	Draw.draw(sequences, SYMBOL_TABLE)  #TESTING
 	return sequences, SYMBOL_TABLE

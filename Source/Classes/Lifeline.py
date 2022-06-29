@@ -25,7 +25,7 @@ RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
 LARGE_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=32)
 
 
-class DrawSymbol:
+class Lifeline:
 	def __init__(self, name: str, value: str, x_pos: int):
 		self.name: str = name
 		self.value: str = value

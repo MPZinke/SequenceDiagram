@@ -102,7 +102,7 @@ class Arrow:
 			head_angle = self.head_angle if(head_angle is None) else head_angle
 			head_length = self.head_length if(head_length is None) else head_length
 
-		check_params("dimensions", **{"start_point": start_point, "tip_point": tip_point, "head_angle": head_angle,
+		check_params("bounds", **{"start_point": start_point, "tip_point": tip_point, "head_angle": head_angle,
 		  "head_length": head_length})
 
 		if(line_angle is None and start_point is None):
@@ -123,6 +123,16 @@ class Arrow:
 				bounds[Arrow.MAX][xy] = point[xy] if(point[xy] > bounds[Arrow.MAX][xy]) else bounds[Arrow.MAX][xy]
 
 		return bounds
+
+
+	def center(self: object=None, *, start_point: set=None, tip_point: set=None) -> Set[int]:
+		if(self is not None):
+			start_point = self.start_point if(start_point is None) else start_point
+			tip_point = self.tip_point if(tip_point is None) else tip_point
+
+		check_params("center", **{"start_point": start_point, "tip_point": tip_point})
+
+		return ((tip_point[0] + start_point[0]) / 2, (tip_point[1] + start_point[1]) / 2)
 
 
 	def dimensions(self: object=None, *, draw_area: ImageDraw=None, line_angle: float=None, start_point: set=None,

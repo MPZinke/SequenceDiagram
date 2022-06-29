@@ -18,6 +18,7 @@ from sys import stderr
 
 from Classes.ParseTree import ParseTree
 from Classes.Token import TokenErr
+import Diagram
 import LexicalAnalysis
 import SemanticAnalysis
 import SyntacticAnalysis
@@ -30,7 +31,10 @@ def main():
 			# print([token.type for token in tokens])
 			abstract_syntax_tree: ParseTree = SyntacticAnalysis.parse(tokens)
 			# print(str(abstract_syntax_tree))
-			SemanticAnalysis.traverse(abstract_syntax_tree)
+			sequences, symbol_table = SemanticAnalysis.traverse(abstract_syntax_tree)
+			print(str(symbol_table))
+			Diagram.draw(sequences, symbol_table)
+
 		except TokenErr as error:
 			print(error, file=stderr)
 
