@@ -34,6 +34,10 @@ class ParseTree:
 		return self.type + "".join(token_strings)
 
 
+	def __reduce__(self):
+		return str(self)
+
+
 	def __getitem__(self, right: int):
 		# if(isinstance())
 		return self.tokens[right]

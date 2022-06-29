@@ -69,6 +69,10 @@ class SymbolTable:
 		return "\n".join(strings)
 
 
+	def __reduce__(self):
+		return str(self)
+
+
 	def append(self, id: str, name: str, type: str, value: str) -> None:
 		self.symbols.append(Symbol(id, name, type, value))
 

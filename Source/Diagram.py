@@ -22,6 +22,7 @@ from typing import List, Set, Tuple
 
 
 from Classes.Arrow import Arrow
+from Classes.Canvas import Canvas
 from Classes.Lifeline import Lifeline
 from Classes.SymbolTable import SymbolTable
 
@@ -36,17 +37,17 @@ MEDIUM_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=
 # ———————————————————————————————————————————————————— CALLBACKS  ———————————————————————————————————————————————————— #
 
 def labeled_backward_sequence(left_symbol_name: str, right_symbol_name: str, text: str) -> None:
-	def draw_backward_sequence(draw_area: ImageDraw, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
+	def draw_backward_sequence(canvas: Canvas, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
 		left_draw_symbol = draw_symbol_for_name(left_symbol_name, drawn_symbols)
 		right_draw_symbol = draw_symbol_for_name(right_symbol_name, drawn_symbols)
 
-		draw_arrow_and_text(draw_area, (right_draw_symbol.x_pos, y_pos), (left_draw_symbol.x_pos, y_pos), text)
+		draw_arrow_and_text(canvas, (right_draw_symbol.x_pos, y_pos), (left_draw_symbol.x_pos, y_pos), text)
 
 	return draw_backward_sequence
 
 
 def labeled_circular_sequence(left_symbol_name: str, label: str) -> None:
-	def draw_circular_sequence(draw_area: ImageDraw, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
+	def draw_circular_sequence(canvas: Canvas, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
 		print("draw_circular_sequence")
 		#TODO
 
@@ -54,27 +55,27 @@ def labeled_circular_sequence(left_symbol_name: str, label: str) -> None:
 
 
 def labeled_forward_sequence(left_symbol_name: str, right_symbol_name: str, text: str) -> None:
-	def draw_forward_sequence(draw_area: ImageDraw, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
+	def draw_forward_sequence(canvas: Canvas, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
 		left_draw_symbol = draw_symbol_for_name(left_symbol_name, drawn_symbols)
 		right_draw_symbol = draw_symbol_for_name(right_symbol_name, drawn_symbols)
 
-		draw_arrow_and_text(draw_area, (left_draw_symbol.x_pos, y_pos), (right_draw_symbol.x_pos, y_pos), text)
+		draw_arrow_and_text(canvas, (left_draw_symbol.x_pos, y_pos), (right_draw_symbol.x_pos, y_pos), text)
 
 	return draw_forward_sequence
 
 
 def unlabeled_backward_sequence(left_symbol_name: str, right_symbol_name: str) -> None:
-	def draw_backward_sequence(draw_area: ImageDraw, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
+	def draw_backward_sequence(canvas: Canvas, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
 		left_draw_symbol = draw_symbol_for_name(left_symbol_name, drawn_symbols)
 		right_draw_symbol = draw_symbol_for_name(right_symbol_name, drawn_symbols)
 
-		Arrow((left_draw_symbol.x_pos, y_pos), start_point=(right_draw_symbol.x_pos, y_pos)).draw(draw_area=draw_area)
+		Arrow((left_draw_symbol.x_pos, y_pos), start_point=(right_draw_symbol.x_pos, y_pos)).draw(canvas=canvas)
 
 	return draw_backward_sequence
 
 
 def unlabeled_circular_sequence(left_symbol_name: str) -> None:
-	def draw_circular_sequence(draw_area: ImageDraw, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
+	def draw_circular_sequence(canvas: Canvas, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
 		return
 		#TODO
 
@@ -82,11 +83,11 @@ def unlabeled_circular_sequence(left_symbol_name: str) -> None:
 
 
 def unlabeled_forward_sequence(left_symbol_name: str, right_symbol_name: str) -> None:
-	def draw_forward_sequence(draw_area: ImageDraw, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
+	def draw_forward_sequence(canvas: Canvas, y_pos: int, drawn_symbols: List[Lifeline]) -> None:
 		left_draw_symbol = draw_symbol_for_name(left_symbol_name, drawn_symbols)
 		right_draw_symbol = draw_symbol_for_name(right_symbol_name, drawn_symbols)
 
-		Arrow((right_draw_symbol.x_pos, y_pos), start_point=(left_draw_symbol.x_pos, y_pos)).draw(draw_area=draw_area)
+		Arrow((right_draw_symbol.x_pos, y_pos), start_point=(left_draw_symbol.x_pos, y_pos)).draw(canvas=canvas)
 
 	return draw_forward_sequence
 
@@ -94,29 +95,26 @@ def unlabeled_forward_sequence(left_symbol_name: str, right_symbol_name: str) ->
 # —————————————————————————————————————————————————— MAIN FUNCTIONS —————————————————————————————————————————————————— #
 
 def draw(sequences: List[callable], symbol_table: SymbolTable) -> None:
-	lifelines = [Lifeline(symbol.name, symbol.value, x * 200 + 200) for x, symbol in enumerate(symbol_table)]
+	canvas = Canvas((200, 200))
 
-	# Create draw_area
-	width = (len(symbol_table) - 1) * 200 + 400
-	height = (len(sequences) - 1) * 100 + 300  # 100 top, 100 bottom, 32 Object, 68 buffer
-	image = Image.new(mode="RGBA", size=[width, height])
-	draw_area = ImageDraw.Draw(image)
+	lifelines = [Lifeline(canvas, symbol.name, symbol.value) for x, symbol in enumerate(symbol_table)]
 
-	[lifeline.draw(draw_area) for lifeline in lifelines]
-	[sequence(draw_area, (y*100) + 166, lifelines) for y, sequence in enumerate(sequences)]
+	# lifelines[0].append_title(canvas)
+	[lifeline.append_title(canvas) for lifeline in lifelines]
+	# [sequence(canvas, (y*100) + 166, lifelines) for y, sequence in enumerate(sequences)]
 
-	image.show()
+	canvas.show()
 
 
 # ——————————————————————————————————————————————————————— DRAW ——————————————————————————————————————————————————————— #
 
-def draw_arrow_and_text(draw_area: ImageDraw, start_point: Set[int], tip_point: Set[int], text: str, *, buffer: int=15,
+def draw_arrow_and_text(canvas: Canvas, start_point: Set[int], tip_point: Set[int], text: str, *, buffer: int=15,
   font=SMALL_FONT) -> None:
 	arrow = Arrow(tip_point, start_point=start_point)
 
 	# Get dimensions
 	_, arrow_height = arrow.dimensions()
-	text_width, text_height = text_dimensions(draw_area, text)
+	text_width, text_height = text_dimensions(canvas, text)
 
 	# Get positions based on center point
 	center: Set[int] = arrow.center()
@@ -124,11 +122,11 @@ def draw_arrow_and_text(draw_area: ImageDraw, start_point: Set[int], tip_point: 
 	arrow_translation = (0, (text_height+arrow_height) / 2 - arrow_height + 15)
 
 	for line in text.split("\\n"):
-		draw_area.text(text_position, line, fill=(255, 255, 255), font=font)
-		text_position = (text_position[0], text_position[1] + draw_area.textsize(line, font=font)[1] + buffer)
+		canvas.text(text_position, line, fill=(255, 255, 255), font=font)
+		text_position = (text_position[0], text_position[1] + canvas.textsize(line, font=font)[1] + buffer)
 
 	arrow.translate(*arrow_translation)
-	arrow.draw(draw_area=draw_area)
+	arrow.draw(canvas=canvas)
 
 
 # ————————————————————————————————————————————————————— UTILITY  ————————————————————————————————————————————————————— #
@@ -145,10 +143,10 @@ def start_point_to_center_around(center: set, dimensions: set) -> set:
 	return (center[0] - dimensions[0] / 2, center[1] - dimensions[1] / 2)
 
 
-def text_dimensions(draw_area: ImageDraw, text: str, *, buffer: int=15, font=SMALL_FONT) -> set:
+def text_dimensions(canvas: Canvas, text: str, *, buffer: int=15, font=SMALL_FONT) -> set:
 	width, height = 0, buffer * text.count("\\n")
 	for line in text.split("\\n"):
-		text_width, text_height = draw_area.textsize(line, font=font)
+		text_width, text_height = canvas.textsize(line, font=font)
 		height += text_height
 		if(text_width > width):
 			width = text_width

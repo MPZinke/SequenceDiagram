@@ -47,6 +47,9 @@ class Token:
 		return json.dumps(self.str)
 
 
+	def __reduce__(self):
+		return str(self)
+
 
 class TokenErr(Exception):
 	def __init__(self, message_format: str, token: Token, additional_values: dict={}):

@@ -25,14 +25,14 @@ import SyntacticAnalysis
 
 
 def main():
-	with open("Test.sequence", "r") as file:
+	with open("CompileProcess.sequence", "r") as file:
 		try:
 			tokens: list = LexicalAnalysis.parse([line.strip() for line in file.readlines()])
-			# print([token.type for token in tokens])
+			print([token.type for token in tokens])
 			abstract_syntax_tree: ParseTree = SyntacticAnalysis.parse(tokens)
-			# print(str(abstract_syntax_tree))
+			print(abstract_syntax_tree)
 			sequences, symbol_table = SemanticAnalysis.traverse(abstract_syntax_tree)
-			print(str(symbol_table))
+			print(symbol_table)
 			Diagram.draw(sequences, symbol_table)
 
 		except TokenErr as error:

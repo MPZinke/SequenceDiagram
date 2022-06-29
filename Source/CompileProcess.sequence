@@ -1,0 +1,13 @@
+user: "User"
+input: "Input"
+lexer: "Lexical"
+parser: "Syntactic"
+semantic: "Semantic"
+diagram: "Diagram"
+
+user -> input "User enters\na sequence"
+input -> lexer "Sequence is broken\ndown into tokens"
+lexer -> parser "Tokens are parsed\nto AST"
+parser -> semantic "AST generates\noperations"
+semantic -> diagram "Generated\noperations\nproduce a diagram"
+user <- diagram "User save diagram"
