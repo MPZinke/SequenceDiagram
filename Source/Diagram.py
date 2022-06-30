@@ -104,8 +104,8 @@ def draw(sequences: List[callable], symbol_table: SymbolTable) -> None:
 
 	lifelines = [Lifeline(symbol.name, symbol.value, canvas=canvas) for x, symbol in enumerate(symbol_table)]
 	[lifeline.append_title() for lifeline in lifelines]
-	# for sequence in sequences
 	[sequence(canvas, lifelines) for y, sequence in enumerate(sequences)]
+	[lifeline.draw_line() for lifeline in lifelines]
 
 	canvas.show()
 
@@ -114,19 +114,18 @@ def draw(sequences: List[callable], symbol_table: SymbolTable) -> None:
 
 def draw_arrow_and_text(canvas: Canvas, start: Set[int], tip_point: Set[int], text: str, *, buffer: int=15,
   border: int=100, font: ImageFont=SMALL_FONT) -> None:
-	text_obj = Text(text, canvas=canvas, buffer=5)
+	text_obj = Text(text, canvas=canvas, buffer=5, font=font)
 	arrow = Arrow(tip_point, canvas=canvas, start=start)
 
-	# Get dimensions	
+	# Get dimensions
 	arrow_width, arrow_height = arrow.dimensions()
 	text_width, text_height = text_obj.dimensions()
-	center: Set[int] = arrow.center()
 	canvas_width, canvas_height = canvas.dimensions()
 
 	canvas.resize(canvas_width, canvas_height + text_height + arrow_height + (buffer * 2))
 
 	arrow.translate(0, canvas_height - border - start[1] + (buffer * 2) + text_height)
-	text_obj.start = (center[0] - (text_width / 2), canvas_height - border + buffer)
+	text_obj.start = (((start[0] + tip_point[0]) / 2) - (text_width / 2), canvas_height - border + buffer)
 
 	arrow.draw()
 	text_obj.draw()
