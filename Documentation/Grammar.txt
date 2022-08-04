@@ -1,7 +1,9 @@
 
 Program						->	Expression							| ε
 Expression 					->	Declaration 		| Sequence		| Declaration Expression	| Sequence Expression
-Declaration					->	Identifier Colon String
+Declaration					->	StringDeclaration	| TitleDeclaration	| LifelineDeclaration
+StringDeclaration			->	StringKeyword Identifier Colon String	| StringKeyword Identifier Colon Identifier
+
 Sequence					->	LeftSequence						| RightSequence
 LeftSequence				->	Identifier LeftArrow Identifier 	| Identifier LeftArrow Identifier String
 RightSequence				->	Identifier RightArrow Identifier	| Identifier RightArrow Identifier String
