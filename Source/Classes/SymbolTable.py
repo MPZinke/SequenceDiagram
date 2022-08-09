@@ -14,10 +14,11 @@ __author__ = "MPZinke"
 ########################################################################################################################
 
 
-from typing import List
+from typing import List, Union
 
 
 from Classes.Token import TokenErr
+from Classes.ParseTree import SYMBOLS
 
 
 class Symbol:
@@ -101,6 +102,25 @@ class SymbolTable:
 				return x
 
 		return -1
+
+
+	def symbol_by_name(self, name: str) -> Union[Symbol, None]:
+		return next((symbol for symbol in self.symbols if(symbol.name == name)), None)
+
+
+	def symbols_by_type(self, type: str) -> List[Symbol]:
+		if(type not in SYMBOLS):
+			raise Exception(f"{type} is not a valid type")
+
+		return [symbol for symbol in self.symbols if(symbol.type == type)]
+
+
+	def symbols_by_types(self, types: List[str]) -> List[Symbol]:
+		for type in types:
+			if(type not in SYMBOLS):
+				raise Exception(f"{type} is not a valid type")
+
+		return [symbol for symbol in self.symbols if(symbol.type == types)]
 
 
 	def unique_id(self, name: str) -> str:

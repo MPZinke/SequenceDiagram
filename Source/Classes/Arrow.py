@@ -94,10 +94,9 @@ class Arrow(Component):
 
 	# ————————————————————————————————————————————————— CALCULATIONS ————————————————————————————————————————————————— #
 
-	def bounds(self: object=None, *, canvas: Canvas=None, line_angle: float=None, start: set=None,
-	  tip_point: set=None, head_angle: float=DEFAULT_ANGLE, head_length: int=DEFAULT_LENGTH) -> Set[int]:
+	def bounds(self: object=None, *, line_angle: float=None, start: set=None, tip_point: set=None,
+	  head_angle: float=DEFAULT_ANGLE, head_length: int=DEFAULT_LENGTH) -> Set[int]:
 		if(self is not None):
-			canvas = self.canvas if(canvas is None) else canvas
 			line_angle = self.line_angle if(line_angle is None) else line_angle
 			start = self.start if(start is None) else start
 			tip_point = self.tip_point if(tip_point is None) else tip_point
@@ -137,9 +136,9 @@ class Arrow(Component):
 		return ((tip_point[0] + start[0]) / 2, (tip_point[1] + start[1]) / 2)
 
 
-	def dimensions(self: object=None, *, canvas: Canvas=None, line_angle: float=None, start: set=None,
+	def dimensions(self: object=None, *, line_angle: float=None, start: set=None,
 	  tip_point: set=None, head_angle: float=DEFAULT_ANGLE, head_length: int=DEFAULT_LENGTH) -> Set[int]:
-		bounds = Arrow.bounds(self, canvas=canvas, line_angle=line_angle, start=start,
+		bounds = Arrow.bounds(self, line_angle=line_angle, start=start,
 		  tip_point=tip_point, head_angle=head_angle, head_length=head_length)
 
 		MAX, MIN = Arrow.MAX, Arrow.MIN

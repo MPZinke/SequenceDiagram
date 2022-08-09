@@ -80,7 +80,7 @@ def TitleDeclaration(title_declaration: ParseTree) -> List[str]:
 		raise TokenErr("Redefinition of declaration '{str}'", identifier)
 
 	if(any(symbol.type == title_declaration.type for symbol in SYMBOL_TABLE)):
-		raise TokenErr("{{type}} already declared", title_declaration)
+		raise TokenErr("{type} already declared", title_declaration[0])
 
 	if(title_declaration[3].type == "String"):
 		string = title_declaration[3].str

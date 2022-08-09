@@ -21,6 +21,7 @@ from typing import Set
 
 
 from Classes.Components import Component
+from Classes.Canvas import Canvas
 
 
 SOURCE_DIR = "/Users/aa703739/Repos/SequenceDiagram/Source"  # .../Source
@@ -36,7 +37,7 @@ class Text(Component):
 	CENTER: int = LEFT+1
 	RIGHT: int = CENTER+1
 
-	def __init__(self, text: str, *, canvas: ImageDraw=None, buffer: int=15, font: ImageFont=SMALL_FONT,
+	def __init__(self, text: str, *, canvas: Canvas=None, buffer: int=15, font: ImageFont=SMALL_FONT,
 	  start: Set[int]=None):
 		Component.__init__(self, canvas=canvas, start=start)
 		self.text = text
@@ -44,7 +45,7 @@ class Text(Component):
 		self.font = font
 
 
-	def dimensions(self: object=None, *, buffer: int=None, canvas: ImageDraw=None, font=SMALL_FONT, text: str=None) \
+	def dimensions(self: object=None, *, buffer: int=None, canvas: Canvas=None, font=SMALL_FONT, text: str=None) \
 	  -> Set[int]:
 		if(self is not None):
 			canvas = self.canvas if(canvas is None) else canvas
@@ -64,7 +65,7 @@ class Text(Component):
 		return (width, height)
 
 
-	def draw(self: object=None, *, align: int=CENTER, buffer: int=None, canvas: ImageDraw=None, font=SMALL_FONT,
+	def draw(self: object=None, *, align: int=CENTER, buffer: int=None, canvas: Canvas=None, font=SMALL_FONT,
 	  start: Set[int]=None, text: str=None) -> None:
 		if(self is not None):
 			canvas = self.canvas if(canvas is None) else canvas

@@ -16,6 +16,7 @@ __author__ = "MPZinke"
 
 import json
 import parse
+from typing import Union
 
 
 TOKEN_TYPES = ["StringKeyword", "TitleKeyword", "LifelineKeyword", "Identifier", "String", "Colon", "RightArrow",
@@ -53,8 +54,9 @@ class Token:
 
 
 class TokenErr(Exception):
-	def __init__(self, message_format: str, token: Token, additional_values: dict={}):
-		Exception.__init__(self, TokenErr.format_message(message_format, token, additional_values))
+	def __init__(self, message_format: str, token: Token, additional_values: Union[dict, None]=None):
+		Exception.__init__(self, TokenErr.format_message(message_format, token, additional_values if(additional_values)
+		  else None))
 
 
 	@staticmethod

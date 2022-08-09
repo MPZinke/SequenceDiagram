@@ -15,7 +15,7 @@ __author__ = "MPZinke"
 
 
 from PIL import Image, ImageDraw
-from typing import Any, Set
+from typing import Any, Set, Union
 
 
 class Canvas:
@@ -30,10 +30,10 @@ class Canvas:
 		return self.size
 
 
-	def resize(self, width: int, height: int) -> None:
+	def resize(self, width: int, height: int, offset: Union[Set, None]=None) -> None:
 		self.size = (width, height)
 		new: Image = Image.new(size=self.size, mode=self.mode)
-		new.paste(self.image)
+		new.paste(self.image, offset if(offset is not None) else (0, 0))
 		self.image = new
 		self.draw_area = ImageDraw.Draw(self.image)
 

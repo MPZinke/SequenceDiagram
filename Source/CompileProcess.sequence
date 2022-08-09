@@ -1,3 +1,5 @@
+Title title: "Sequence Diagram Process"
+
 Lifeline user: "User"
 Lifeline input: "Input"
 Lifeline lexer: "Lexical"
