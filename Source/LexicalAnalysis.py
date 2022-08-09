@@ -39,6 +39,24 @@ def match_regex(function: callable) -> int:
 
 @wrap_token_type
 @match_regex
+def StringKeyword() -> int:
+	return "String"
+
+
+@wrap_token_type
+@match_regex
+def TitleKeyword() -> int:
+	return "Title"
+
+
+@wrap_token_type
+@match_regex
+def LifelineKeyword() -> int:
+	return "Lifeline"
+
+
+@wrap_token_type
+@match_regex
 def Identifier() -> int:
 	return r"[_a-zA-Z][_a-zA-Z0-9]*"
 
@@ -77,7 +95,8 @@ def WhiteSpace() -> int:
 
 def token_type(line_num: int,  line: str, column: int) -> Token:
 	token = Token(0, 0, column, "", "")
-	for function in [Identifier, String, Colon, RightArrow, LeftArrow, WhiteSpace]:
+	for function in [StringKeyword, TitleKeyword, LifelineKeyword, Identifier, String, Colon, RightArrow, LeftArrow,
+	  WhiteSpace]:
 		if((temp := Token(line_num+1, function(line[column:]), column, line, function.__name__)).length > token.length):
 			token = temp
 

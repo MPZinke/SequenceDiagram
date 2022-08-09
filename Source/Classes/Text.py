@@ -23,7 +23,7 @@ from typing import Set
 from Classes.Components import Component
 
 
-SOURCE_DIR = "/Users/mpzinke/Main/SequenceDiagram/Source"  # .../Source
+SOURCE_DIR = "/Users/aa703739/Repos/SequenceDiagram/Source"  # .../Source
 RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
 
 

@@ -17,7 +17,8 @@ __author__ = "MPZinke"
 from Classes.Token import TOKEN_TYPES
 
 
-NON_TERMINALS = ["Program", "Expression", "Declaration", "Sequence", "LeftSequence", "RightSequence"]
+NON_TERMINALS = ["Program", "Expression", "Declaration", "StringDeclaration", "TitleDeclaration", "LifelineDeclaration",
+  "Sequence", "LeftSequence", "RightSequence"]
 TERMINALS = TOKEN_TYPES
 
 SYMBOLS = NON_TERMINALS + TERMINALS

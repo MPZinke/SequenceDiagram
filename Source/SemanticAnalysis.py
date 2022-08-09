@@ -26,6 +26,9 @@ from Classes.Token import TokenErr
 SYMBOL_TABLE = SymbolTable()
 
 
+# —————————————————————————————————————————————————— NON-TERMINALS  —————————————————————————————————————————————————— #
+# ———————————————————————————————————————————————————————————————————————————————————————————————————————————————————— #
+
 @check_parse_type
 def Program(program: ParseTree) -> List[callable]:
 	if(program.tokens == 0):
@@ -44,18 +47,69 @@ def Expression(expression: ParseTree) -> List[callable]:
 	return execution
 
 
+# ——————————————————————————————————————————— NON-TERMINALS::DECLARATIONS  ——————————————————————————————————————————— #
+
 @check_parse_type
 def Declaration(declaration: ParseTree) -> List[callable]:
-	identifier = declaration[0]
-	string = declaration[2]
+	name, type, value = globals()[declaration[0].type](declaration[0])
+	SYMBOL_TABLE.append(name, type, value)
+
+	return []
+
+
+def StringDeclaration(string_declaration: ParseTree) -> List[str]:
+	identifier = string_declaration[1]
 
 	if(identifier.str in SYMBOL_TABLE):
 		raise TokenErr("Redefinition of declaration '{str}'", identifier)
 
-	SYMBOL_TABLE.append(SYMBOL_TABLE.unique_id(identifier.str), identifier.str, declaration.type, string.str)
+	if(string_declaration[3].type == "String"):
+		string = string_declaration[3].str
+	else:
+		if(all(string_declaration[3].str != symbol.name for symbol in SYMBOL_TABLE)):
+			raise TokenErr("{{str}} is not declared", string_declaration[3])
+		string = [symbol for symbol in SYMBOL_TABLE if(symbol.name == string_declaration[3].str)][0].value
 
-	return []
+	return identifier.str, string_declaration.type, string
 
+
+def TitleDeclaration(title_declaration: ParseTree) -> List[str]:
+	identifier = title_declaration[1]
+
+	if(identifier.str in SYMBOL_TABLE):
+		raise TokenErr("Redefinition of declaration '{str}'", identifier)
+
+	if(any(symbol.type == title_declaration.type for symbol in SYMBOL_TABLE)):
+		raise TokenErr("{{type}} already declared", title_declaration)
+
+	if(title_declaration[3].type == "String"):
+		string = title_declaration[3].str
+	else:
+		if(all(title_declaration[3].str != symbol.name for symbol in SYMBOL_TABLE)):
+			raise TokenErr("{{str}} is not declared", title_declaration[3])
+		string = [symbol for symbol in SYMBOL_TABLE if(symbol.name == title_declaration[3].str)][0].value
+
+	return identifier.str, title_declaration.type, string
+
+
+def LifelineDeclaration(title_declaration: ParseTree) -> List[str]:
+	identifier = title_declaration[1]
+
+	if(identifier.str in SYMBOL_TABLE):
+		raise TokenErr("Redefinition of declaration '{str}'", identifier)
+
+	if(title_declaration[3].type == "String"):
+		string = title_declaration[3].str
+	else:
+		if(all(title_declaration[3].str != symbol.name for symbol in SYMBOL_TABLE)):
+			raise TokenErr("{{str}} is not declared", title_declaration[3])
+		string = [symbol for symbol in SYMBOL_TABLE if(symbol.name == title_declaration[3].str)][0].value
+
+	return identifier.str, title_declaration.type, string
+
+
+
+# ————————————————————————————————————————————— NON-TERMINALS::SEQUENCES ————————————————————————————————————————————— #
 
 @check_parse_type
 def Sequence(sequence: ParseTree) -> List[callable]:

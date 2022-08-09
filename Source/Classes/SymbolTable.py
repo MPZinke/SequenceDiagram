@@ -21,8 +21,9 @@ from Classes.Token import TokenErr
 
 
 class Symbol:
-	def __init__(self, id, name, type, value):
-		self.id: str = id
+	def __init__(self, name, type, value):
+	# def __init__(self, id, name, type, value):
+		# self.id: str = id
 		self.name: str = name
 		self.type: str = type
 		self.value: str = value
@@ -54,7 +55,7 @@ class SymbolTable:
 
 
 	def __str__(self):
-		lengths =  {"id": 0, "name": 0, "type": 0, "value": 0}
+		lengths =  {"name": 0, "type": 0, "value": 0}
 		for symbol in self.symbols:
 			for attr, length in lengths.items():
 				if(len(getattr(symbol, attr)) > length):
@@ -62,7 +63,7 @@ class SymbolTable:
 
 		strings = []
 		for symbol in self.symbols:
-			string = "| {id:{id_len}} | {name:{name_len}} | {type:{type_len}} | {value:{value_len}} |"
+			string = "| {name:{name_len}} | {type:{type_len}} | {value:{value_len}} |"
 			values = {key+"_len": f" <{str(value)}" for key, value in lengths.items()}
 			strings.append(string.format(**{**values, **{key: getattr(symbol, key) for key in lengths}}))
 
@@ -73,8 +74,9 @@ class SymbolTable:
 		return str(self)
 
 
-	def append(self, id: str, name: str, type: str, value: str) -> None:
-		self.symbols.append(Symbol(id, name, type, value))
+	# def append(self, id: str, name: str, type: str, value: str) -> None:
+	def append(self, name: str, type: str, value: str) -> None:
+		self.symbols.append(Symbol(name, type, value))
 
 
 	def lookup(self, name) -> Symbol:

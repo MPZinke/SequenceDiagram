@@ -18,7 +18,8 @@ import json
 import parse
 
 
-TOKEN_TYPES = ["Identifier", "String", "Colon", "RightArrow", "LeftArrow", "WhiteSpace"]
+TOKEN_TYPES = ["StringKeyword", "TitleKeyword", "LifelineKeyword", "Identifier", "String", "Colon", "RightArrow",
+  "LeftArrow", "WhiteSpace"]
 
 
 # Because the function name is used to determine the token type, this wrapper is applied to ensure the function is named

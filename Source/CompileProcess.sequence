@@ -1,9 +1,14 @@
-user: "User"
-input: "Input"
-lexer: "Lexical"
-parser: "Syntactic"
-semantic: "Semantic"
-diagram: "Diagram"
+Lifeline user: "User"
+Lifeline input: "Input"
+Lifeline lexer: "Lexical"
+
+String Syntactic: "Syntactic"
+String Semantic: "Semantic"
+String Diagram: "Diagram"
+
+Lifeline parser: Syntactic
+Lifeline semantic: Semantic
+Lifeline diagram: Diagram
 
 user -> input "User enters\na sequence"
 input -> lexer "Sequence is broken\ndown into tokens"

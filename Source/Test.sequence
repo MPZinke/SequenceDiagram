@@ -1,12 +1,10 @@
-PREFACE: "Preface"
-START: "Start"
-MIDDLE: "Middle"
-END:   "End"
-EPILOGE: "Epiloge"
-
-SPACE : ""
-
-part2: "PART II"
+Lifeline PREFACE: "Preface"
+Lifeline START: "Start"
+Lifeline MIDDLE: "Middle"
+Lifeline END:   "End"
+Lifeline EPILOGE: "Epiloge"
+Lifeline SPACE : ""
+Lifeline part2: "PART II"
 
 PREFACE -> START "PREFACE -> START"
 START -> MIDDLE
