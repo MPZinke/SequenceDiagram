@@ -18,8 +18,8 @@ import math
 from typing import Set, Tuple, Union
 
 
-from Classes.Canvas import Canvas
-from Classes.Components import Component
+from Classes.Drawing.Canvas import Canvas
+from Classes.Drawing import Component
 
 
 def check_params(function_name: str, **params) -> None:

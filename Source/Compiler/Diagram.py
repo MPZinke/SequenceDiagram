@@ -21,18 +21,19 @@ from PIL import Image, ImageDraw, ImageFont
 from typing import List, Set, Tuple, Union
 
 
-from Classes.Arrow import Arrow
-from Classes.Canvas import Canvas
-from Classes.Lifeline import Lifeline
-from Classes.SymbolTable import Symbol, SymbolTable
-from Classes.Text import Text
+from Classes.Compiling.SymbolTable import Symbol, SymbolTable
+from Classes.Drawing.Arrow import Arrow
+from Classes.Drawing.Canvas import Canvas
+from Classes.Drawing.Lifeline import Lifeline
+from Classes.Drawing.Text import Text
 
 
-SOURCE_DIR = str(Path(__file__).absolute().parent)  # .../Source
+SOURCE_DIR = str(Path(__file__).absolute().parent.parent)  # -/Source
 RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
 
 SMALL_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=16)
 MEDIUM_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=20)
+LARGE_FONT = ImageFont.truetype(join(RESOURCES_DIR, "FiraCode-Bold.ttf"), size=24)
 
 
 # ———————————————————————————————————————————————————— CALLBACKS  ———————————————————————————————————————————————————— #
@@ -41,7 +42,7 @@ def draw_title(canvas: Canvas, symbol_table: SymbolTable) -> None:
 	if(bool(title := symbol_table.symbols_by_type("TitleDeclaration")) is False):
 		return
 
-	title_text = Text(title[0].value[1:-1], canvas=canvas)
+	title_text = Text(title[0].value[1:-1], canvas=canvas, font=LARGE_FONT)
 
 	canvas_width, canvas_height = canvas.dimensions()
 	title_text_width, title_text_height = title_text.dimensions()

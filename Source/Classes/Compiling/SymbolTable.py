@@ -17,8 +17,8 @@ __author__ = "MPZinke"
 from typing import List, Union
 
 
-from Classes.Token import TokenErr
-from Classes.ParseTree import SYMBOLS
+from Classes.Compiling.Token import TokenErr
+from Classes.Compiling.ParseTree import SYMBOLS
 
 
 class Symbol:

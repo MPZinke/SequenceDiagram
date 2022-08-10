@@ -20,12 +20,12 @@ from PIL import ImageDraw, ImageFont
 from typing import Set
 
 
-from Classes.Components import Component
-from Classes.Canvas import Canvas
+from Classes.Drawing import Component
+from Classes.Drawing.Canvas import Canvas
 
 
-SOURCE_DIR = "/Users/aa703739/Repos/SequenceDiagram/Source"  # .../Source
-RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # .../Source/Resources
+SOURCE_DIR = str(Path(__file__).absolute().parent.parent.parent)  # -/Source
+RESOURCES_DIR = join(SOURCE_DIR, "Resources")  # -/Source/Resources
 
 
 class Text(Component):

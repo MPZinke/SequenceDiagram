@@ -17,10 +17,10 @@ __author__ = "MPZinke"
 from typing import List
 
 
-import Diagram
-from Classes.ParseTree import ParseTree, check_parse_type
-from Classes.SymbolTable import SymbolTable
-from Classes.Token import TokenErr
+from Classes.Compiling.ParseTree import ParseTree, check_parse_type
+from Classes.Compiling.SymbolTable import SymbolTable
+from Classes.Compiling.Token import TokenErr
+from Compiler import Diagram
 
 
 SYMBOL_TABLE = SymbolTable()

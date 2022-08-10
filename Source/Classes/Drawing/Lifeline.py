@@ -20,9 +20,9 @@ from pathlib import Path
 from typing import Set
 
 
-from Classes.Canvas import Canvas
-from Classes.Components import Component
-from Classes.Text import Text
+from Classes.Drawing import Component
+from Classes.Drawing.Canvas import Canvas
+from Classes.Drawing.Text import Text
 
 
 SOURCE_DIR = str(Path(__file__).absolute().parent.parent)  # .../Source

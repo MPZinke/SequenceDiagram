@@ -16,12 +16,12 @@ __author__ = "MPZinke"
 from sys import stderr
 
 
-from Classes.ParseTree import ParseTree
-from Classes.Token import TokenErr
-import Diagram
-import LexicalAnalysis
-import SemanticAnalysis
-import SyntacticAnalysis
+from Classes.Compiling.ParseTree import ParseTree
+from Classes.Compiling.Token import TokenErr
+from Compiler import LexicalAnalysis
+from Compiler import SemanticAnalysis
+from Compiler import SyntacticAnalysis
+from Compiler import Diagram
 
 
 def main():

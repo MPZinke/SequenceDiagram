@@ -17,7 +17,7 @@ __author__ = "MPZinke"
 from typing import Set
 
 
-from Classes.Canvas import Canvas
+from Classes.Drawing.Canvas import Canvas
 
 
 class Component:
