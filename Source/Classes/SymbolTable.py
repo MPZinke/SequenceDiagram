@@ -120,7 +120,7 @@ class SymbolTable:
 			if(type not in SYMBOLS):
 				raise Exception(f"{type} is not a valid type")
 
-		return [symbol for symbol in self.symbols if(symbol.type == types)]
+		return [symbol for symbol in self.symbols if(symbol.type in types)]
 
 
 	def unique_id(self, name: str) -> str:

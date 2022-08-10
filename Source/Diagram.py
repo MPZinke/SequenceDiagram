@@ -24,7 +24,7 @@ from typing import List, Set, Tuple, Union
 from Classes.Arrow import Arrow
 from Classes.Canvas import Canvas
 from Classes.Lifeline import Lifeline
-from Classes.SymbolTable import SymbolTable
+from Classes.SymbolTable import Symbol, SymbolTable
 from Classes.Text import Text
 
 
@@ -115,9 +115,10 @@ def unlabeled_forward_sequence(left_symbol_name: str, right_symbol_name: str) ->
 def draw(sequences: List[callable], symbol_table: SymbolTable) -> None:
 	canvas = Canvas((200, 200))
 
-	lifeline_symbols = symbol_table.symbols_by_types(["LeftSequence", "RightSequence"])
+	lifeline_symbols: List[Symbol] = symbol_table.symbols_by_type("LifelineDeclaration")
 	lifelines = [Lifeline(symbol.name, symbol.value[1:-1], canvas=canvas) for symbol in lifeline_symbols]
 	[lifeline.append_title() for lifeline in lifelines]
+
 	[sequence(canvas, lifelines) for sequence in sequences]
 	[lifeline.draw_line() for lifeline in lifelines]
 
